@@ -23,12 +23,14 @@ class UsuarioResponse(UsuarioBase):
 
 
 class SalaBase(BaseModel):
-    nome: str
+    nome_sala: str
+    tipo: Optional[str] = None
     capacidade: Optional[int] = None
-    descricao: Optional[str] = None
+
 
 class SalaCreate(SalaBase):
     pass
+
 
 class SalaResponse(SalaBase):
     id_sala: int
@@ -39,19 +41,23 @@ class SalaResponse(SalaBase):
 
 
 class AgendamentoBase(BaseModel):
+    matricula: int
+    id_sala: int
     data: date
     hora_inicio: time
     hora_fim: time
+    finalidade: Optional[str] = None
+    status: Optional[str] = "ativo"
+
 
 class AgendamentoCreate(AgendamentoBase):
-    matricula_usuario: int
-    id_sala: int
+    pass
+
 
 class AgendamentoResponse(AgendamentoBase):
-    id_agendamento: int
-    matricula_usuario: int
-    id_sala: int
+    id: int
 
     class Config:
         orm_mode = True
+
 

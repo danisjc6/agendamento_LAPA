@@ -4,7 +4,25 @@ from typing import List
 import models
 import schemas
 
-app = FastAPI(title="API Laboratório de Anatomia")
+from routes import sala, agendamento
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
+app = FastAPI()
+
+app.include_router(sala.router)
+app.include_router(agendamento.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # depois podemos restringir
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # =========================
 # ROTAS USUÁRIOS
