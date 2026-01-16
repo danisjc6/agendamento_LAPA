@@ -27,37 +27,27 @@ class SalaBase(BaseModel):
     tipo: Optional[str] = None
     capacidade: Optional[int] = None
 
-
-class SalaCreate(SalaBase):
-    pass
-
-
 class SalaResponse(SalaBase):
     id_sala: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 
-class AgendamentoBase(BaseModel):
-    matricula: int
-    id_sala: int
+
+class HorarioDisponibilidade(BaseModel):
     data: date
     hora_inicio: time
     hora_fim: time
-    finalidade: Optional[str] = None
-    status: Optional[str] = "ativo"
 
 
-class AgendamentoCreate(AgendamentoBase):
-    pass
 
+class Sala(Base):
+    __tablename__ = "Sala"
 
-class AgendamentoResponse(AgendamentoBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
+    id_sala = Column(Integer, primary_key=True, index=True)
+    nome_sala = Column(String(50), unique=True, nullable=False)
+    tipo = Column(String(50))
+    capacidade = Column(Integer)
 

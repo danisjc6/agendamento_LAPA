@@ -1,47 +1,38 @@
-from fastapi import APIRouter
-from database import get_connection
-from schemas import SalaCreate, SalaResponse
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from datetime import date, time
+
+from database import get_db
+from models import Sala, Reserva, Agendamento
+from schemas.sala import SalaResponse
+from schemas.agendamento import HorarioDisponibilidade
 
 router = APIRouter(prefix="/salas", tags=["Salas"])
 
 
-@router.post("/", response_model=SalaResponse)
-def criar_sala(sala: SalaCreate):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    query = """
-    INSERT INTO Sala (nome_sala, tipo, capacidade)
-    VALUES (%s, %s, %s)
-    """
-    cursor.execute(query, (
-        sala.nome_sala,
-        sala.tipo,
-        sala.capacidade
-    ))
-    conn.commit()
-
-    cursor.execute(
-        "SELECT * FROM Sala WHERE id_sala = LAST_INSERT_ID()"
+@router.post(
+    "/disponiveis",
+    response_model=list[SalaResponse]
+)
+def listar_salas_disponiveis(
+    dados: HorarioDisponibilidade,
+    db: Session = Depends(get_db)
+):
+    subquery = (
+        db.query(Reserva.id_sala)
+        .join(Agendamento, Agendamento.id == Reserva.id_agendamento)
+        .filter(
+            Agendamento.data == dados.data,
+            dados.hora_inicio < Agendamento.hora_fim,
+            dados.hora_fim > Agendamento.hora_inicio
+        )
+        .subquery()
     )
-    nova_sala = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
-
-    return nova_sala
-
-
-
-@router.get("/", response_model=list[SalaResponse])
-def listar_salas():
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT * FROM Sala")
-    salas = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    salas = (
+        db.query(Sala)
+        .filter(Sala.id_sala.notin_(subquery))
+        .all()
+    )
 
     return salas
