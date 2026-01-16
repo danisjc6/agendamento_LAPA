@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import date, time
 
 
+
 class UsuarioBase(BaseModel):
     nome: str
     email: Optional[str] = None
@@ -18,7 +19,7 @@ class UsuarioResponse(UsuarioBase):
     matricula: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 
@@ -33,6 +34,29 @@ class SalaResponse(SalaBase):
     class Config:
         from_attributes = True
 
+class SalaCreate(SalaBase):
+    pass
+
+
+
+class AgendamentoBase(BaseModel):
+    matricula: int
+    data: date
+    hora_inicio: time
+    hora_fim: time
+    finalidade: Optional[str] = None
+    status: Optional[str] = "ativo"
+
+
+class AgendamentoCreate(AgendamentoBase):
+    pass
+
+
+class AgendamentoResponse(AgendamentoBase):
+    id: int
+
+    class Config:
+        from_attributes = True
 
 
 
@@ -43,11 +67,29 @@ class HorarioDisponibilidade(BaseModel):
 
 
 
-class Sala(Base):
-    __tablename__ = "Sala"
+class ReservaDetalhada(BaseModel):
+    id_agendamento: int
+    data: date
+    hora_inicio: time
+    hora_fim: time
+    finalidade: str
+    status: str
 
-    id_sala = Column(Integer, primary_key=True, index=True)
-    nome_sala = Column(String(50), unique=True, nullable=False)
-    tipo = Column(String(50))
-    capacidade = Column(Integer)
+    nome_sala: str
 
+    matricula: int
+    nome_usuario: str
+
+    class Config:
+        from_attributes = True
+
+
+
+class CancelamentoRequest(BaseModel):
+    motivo: str | None = None
+
+
+
+class ReservaCreate(BaseModel):
+    id_agendamento: int
+    id_sala: int

@@ -4,8 +4,8 @@ from datetime import date, time
 
 from database import get_db
 from models import Sala, Reserva, Agendamento
-from schemas.sala import SalaResponse
-from schemas.agendamento import HorarioDisponibilidade
+from schemas import SalaResponse
+from schemas import HorarioDisponibilidade
 
 router = APIRouter(prefix="/salas", tags=["Salas"])
 

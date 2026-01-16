@@ -1,19 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from typing import List
+from routes import usuario, sala, agendamento, reserva
+from fastapi.middleware.cors import CORSMiddleware
 
 import models
 import schemas
 
-from routes import sala, agendamento
-
-from fastapi.middleware.cors import CORSMiddleware
-
-
-
 app = FastAPI()
 
-app.include_router(sala.router)
-app.include_router(agendamento.router)
+app.include_router(usuario.router, prefix="/usuarios", tags=["Usuarios"])
+app.include_router(sala.router, prefix="/salas", tags=["Salas"])
+app.include_router(agendamento.router, prefix="/agendamentos", tags=["Agendamentos"])
+app.include_router(reserva.router, prefix="/reservas", tags=["Reservas"])
+
 
 app.add_middleware(
     CORSMiddleware,
