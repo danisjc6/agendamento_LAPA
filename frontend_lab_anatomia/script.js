@@ -82,6 +82,11 @@ function editar(tipo, index) {
   excluir(tipo, index);
 }
 
+fetch(`${API}/agendamentos/${id}/cancelar`, {
+  method: "POST"
+})
+
+
 /* ================= INICIALIZAÇÃO ================= */
 
 window.onload = () => {

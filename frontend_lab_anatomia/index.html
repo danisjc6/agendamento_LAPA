@@ -1,92 +1,123 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Banco de Dados – Anatomia</title>
-  <script src="script.js" defer></script>
-  <style>
-    section { display: none; margin-top: 20px; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 6px; }
-    button { margin: 2px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Agendamento – Laboratório de Anatomia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        .btn-cancelar {
+            background-color: #c62828;
+            color: white;
+            border: none;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Sistema de Gerenciamento</h1>
+<h1>Agendamento de Salas – Laboratório de Anatomia</h1>
 
-<nav>
-  <button onclick="mostrar('usuarios')">Usuários</button>
-  <button onclick="mostrar('salas')">Salas</button>
-  <button onclick="mostrar('pecas')">Peças Anatômicas</button>
-</nav>
-
-<!-- ================= USUÁRIOS ================= -->
-<section id="usuarios">
-  <h2>Usuários</h2>
-
-  <form onsubmit="event.preventDefault(); salvar('usuarios')">
-    <input placeholder="ID">
-    <input placeholder="Nome">
-    <input placeholder="Curso">
-    <button type="submit">Salvar</button>
-  </form>
-
-  <table>
+<!-- SALAS -->
+<h2>1. Salas</h2>
+<table id="tabelaSalas">
     <thead>
-      <tr>
-        <th>ID</th><th>Nome</th><th>Curso</th><th>Ações</th>
-      </tr>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Capacidade</th>
+        </tr>
     </thead>
-    <tbody id="tabela_usuarios"></tbody>
-  </table>
-</section>
+    <tbody></tbody>
+</table>
 
-<!-- ================= SALAS ================= -->
-<section id="salas">
-  <h2>Salas</h2>
+<!-- DATA -->
+<h2>2. Data</h2>
+<input type="date" id="dataSelecionada">
 
-  <form onsubmit="event.preventDefault(); salvar('salas')">
-    <input placeholder="Nome da sala">
-    <input placeholder="Tipo">
-    <input placeholder="Capacidade">
-    <button type="submit">Salvar</button>
-  </form>
-
-  <table>
+<!-- DISPONIBILIDADE -->
+<h2>3. Horários</h2>
+<table id="tabelaHorarios">
     <thead>
-      <tr>
-        <th>Nome</th><th>Tipo</th><th>Capacidade</th><th>Ações</th>
-      </tr>
+        <tr>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Status</th>
+        </tr>
     </thead>
-    <tbody id="tabela_salas"></tbody>
-  </table>
-</section>
+    <tbody></tbody>
+</table>
 
-<!-- ================= PEÇAS ================= -->
-<section id="pecas">
-  <h2>Peças Anatômicas</h2>
+<!-- FORMULÁRIO -->
+<h2>4. Criar Agendamento</h2>
+<form id="formAgendamento">
+    <label>Matrícula:</label><br>
+    <input type="number" id="matricula" required><br><br>
 
-  <form onsubmit="event.preventDefault(); salvar('pecas')">
-    <input placeholder="Descrição">
-    <input placeholder="Quantidade">
-    <input placeholder="Nome da peça">
-    <input placeholder="Categoria">
-    <input placeholder="Estado">
-    <input placeholder="Localização">
-    <button type="submit">Salvar</button>
-  </form>
+    <label>Hora início:</label><br>
+    <input type="time" id="horaInicio" required><br><br>
 
-  <table>
+    <label>Hora fim:</label><br>
+    <input type="time" id="horaFim" required><br><br>
+
+    <label>Finalidade:</label><br>
+    <input type="text" id="finalidade"><br><br>
+
+    <button class="btn" type="submit">Agendar</button>
+</form>
+
+<!-- AGENDAMENTOS -->
+<h2>5. Agendamentos</h2>
+<table id="tabelaAgendamentos">
     <thead>
-      <tr>
-        <th>Descrição</th><th>Qtd</th><th>Nome</th>
-        <th>Categoria</th><th>Estado</th><th>Local</th><th>Ações</th>
-      </tr>
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Status</th>
+            <th>Ação</th>
+        </tr>
     </thead>
-    <tbody id="tabela_pecas"></tbody>
-  </table>
-</section>
+    <tbody></tbody>
+</table>
+
+<script src="js/api.js"></script>
+<script src="js/salas.js"></script>
+<script src="js/agendamentos.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
