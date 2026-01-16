@@ -39,6 +39,7 @@ Com uso de chaves primárias, chaves estrangeiras e integridade referencial.
 Crie o banco no MySQL:
 
 ```sql
+
 CREATE DATABASE laboratorio_anatomia;
 
 Configure o acesso no arquivo database.py.
@@ -111,5 +112,6 @@ Arquitetura de sistemas
 ✨ Autora
 
 Daniela Oliveira
+
 
 
