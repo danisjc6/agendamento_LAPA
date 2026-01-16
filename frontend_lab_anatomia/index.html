@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Banco de Dados – Anatomia</title>
+  <script src="script.js" defer></script>
+  <style>
+    section { display: none; margin-top: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px; }
+    button { margin: 2px; }
+  </style>
+</head>
+<body>
+
+<h1>Sistema de Gerenciamento</h1>
+
+<nav>
+  <button onclick="mostrar('usuarios')">Usuários</button>
+  <button onclick="mostrar('salas')">Salas</button>
+  <button onclick="mostrar('pecas')">Peças Anatômicas</button>
+</nav>
+
+<!-- ================= USUÁRIOS ================= -->
+<section id="usuarios">
+  <h2>Usuários</h2>
+
+  <form onsubmit="event.preventDefault(); salvar('usuarios')">
+    <input placeholder="ID">
+    <input placeholder="Nome">
+    <input placeholder="Curso">
+    <button type="submit">Salvar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Nome</th><th>Curso</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela_usuarios"></tbody>
+  </table>
+</section>
+
+<!-- ================= SALAS ================= -->
+<section id="salas">
+  <h2>Salas</h2>
+
+  <form onsubmit="event.preventDefault(); salvar('salas')">
+    <input placeholder="Nome da sala">
+    <input placeholder="Tipo">
+    <input placeholder="Capacidade">
+    <button type="submit">Salvar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th><th>Tipo</th><th>Capacidade</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela_salas"></tbody>
+  </table>
+</section>
+
+<!-- ================= PEÇAS ================= -->
+<section id="pecas">
+  <h2>Peças Anatômicas</h2>
+
+  <form onsubmit="event.preventDefault(); salvar('pecas')">
+    <input placeholder="Descrição">
+    <input placeholder="Quantidade">
+    <input placeholder="Nome da peça">
+    <input placeholder="Categoria">
+    <input placeholder="Estado">
+    <input placeholder="Localização">
+    <button type="submit">Salvar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Descrição</th><th>Qtd</th><th>Nome</th>
+        <th>Categoria</th><th>Estado</th><th>Local</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela_pecas"></tbody>
+  </table>
+</section>
+
+</body>
+</html>
