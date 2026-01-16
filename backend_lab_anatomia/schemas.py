@@ -66,7 +66,6 @@ class HorarioDisponibilidade(BaseModel):
     hora_fim: time
 
 
-
 class ReservaDetalhada(BaseModel):
     id_agendamento: int
     data: date
