@@ -1,76 +1,134 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
+from typing import List
+
 import models
+import schemas
 
-app = FastAPI(title="API Anatomia")
+app = FastAPI(title="API Laboratório de Anatomia")
 
-# ====== SCHEMAS ======
-class Usuario(BaseModel):
-    id_usuario: int
-    nome: str
-    curso: str
+# =========================
+# ROTAS USUÁRIOS
+# =========================
 
-class Sala(BaseModel):
-    nome_sala: str
-    tipo: str
-    capacidade: int
+@app.post("/usuarios", response_model=schemas.UsuarioResponse)
+def criar_usuario(usuario: schemas.UsuarioCreate):
+    try:
+        novo_usuario = models.inserir_usuario(usuario)
+        return novo_usuario
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-class Peca(BaseModel):
-    descricao: str
-    numero: int
-    nome_peca: str
-    categoria: str
-    estado_conservacao: str
-    localizacao: str
 
-# ====== ROTAS ======
-
-@app.get("/usuarios")
-def get_usuarios():
+@app.get("/usuarios", response_model=List[schemas.UsuarioResponse])
+def listar_usuarios():
     return models.listar_usuarios()
 
-@app.post("/usuarios")
-def post_usuario(usuario: Usuario):
-    models.inserir_usuario(
-        usuario.matricula,
-        usuario.nome,
-        usuario.email,
-        usuario.telefone,
-        usuario.curso
-    )
-    return {"mensagem": "Usuário cadastrado com sucesso"}
+
+@app.get("/usuarios/{matricula}", response_model=schemas.UsuarioResponse)
+def pegar_usuario(matricula: int):
+    usuario = models.pegar_usuario(matricula)
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    return usuario
 
 
-@app.get("/salas")
-def get_salas():
+@app.put("/usuarios/{matricula}", response_model=schemas.UsuarioResponse)
+def atualizar_usuario(matricula: int, usuario: schemas.UsuarioCreate):
+    try:
+        atualizado = models.atualizar_usuario(matricula, usuario)
+        return atualizado
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/usuarios/{matricula}")
+def deletar_usuario(matricula: int):
+    try:
+        models.deletar_usuario(matricula)
+        return {"detail": "Usuário deletado"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# =========================
+# ROTAS SALAS
+# =========================
+
+@app.post("/salas", response_model=schemas.SalaResponse)
+def criar_sala(sala: schemas.SalaCreate):
+    try:
+        return models.inserir_sala(sala)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/salas", response_model=List[schemas.SalaResponse])
+def listar_salas():
     return models.listar_salas()
 
-@app.post("/salas")
-def post_sala(sala: Sala):
-    models.inserir_sala(
-        (sala.nome_sala, sala.tipo, sala.capacidade)
-    )
-    return {"status": "Sala inserida"}
+
+@app.get("/salas/{id_sala}", response_model=schemas.SalaResponse)
+def pegar_sala(id_sala: int):
+    sala = models.pegar_sala(id_sala)
+    if sala is None:
+        raise HTTPException(status_code=404, detail="Sala não encontrada")
+    return sala
 
 
-@app.get("/pecas")
-def get_pecas():
-    return models.listar_pecas()
+@app.put("/salas/{id_sala}", response_model=schemas.SalaResponse)
+def atualizar_sala(id_sala: int, sala: schemas.SalaCreate):
+    try:
+        return models.atualizar_sala(id_sala, sala)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-@app.post("/pecas")
-def post_peca(peca: Peca):
-    models.inserir_peca(
-        (peca.descricao, peca.numero, peca.nome_peca,
-         peca.categoria, peca.estado_conservacao, peca.localizacao)
-    )
-    return {"status": "Peça inserida"}
 
-from fastapi.middleware.cors import CORSMiddleware
+@app.delete("/salas/{id_sala}")
+def deletar_sala(id_sala: int):
+    try:
+        models.deletar_sala(id_sala)
+        return {"detail": "Sala deletada"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # depois restringimos
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+# =========================
+# ROTAS AGENDAMENTOS
+# =========================
+
+@app.post("/agendamentos", response_model=schemas.AgendamentoResponse)
+def criar_agendamento(agendamento: schemas.AgendamentoCreate):
+    try:
+        return models.inserir_agendamento(agendamento)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/agendamentos", response_model=List[schemas.AgendamentoResponse])
+def listar_agendamentos():
+    return models.listar_agendamentos()
+
+
+@app.get("/agendamentos/{id_agendamento}", response_model=schemas.AgendamentoResponse)
+def pegar_agendamento(id_agendamento: int):
+    agendamento = models.pegar_agendamento(id_agendamento)
+    if agendamento is None:
+        raise HTTPException(status_code=404, detail="Agendamento não encontrado")
+    return agendamento
+
+
+@app.put("/agendamentos/{id_agendamento}", response_model=schemas.AgendamentoResponse)
+def atualizar_agendamento(id_agendamento: int, agendamento: schemas.AgendamentoCreate):
+    try:
+        return models.atualizar_agendamento(id_agendamento, agendamento)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/agendamentos/{id_agendamento}")
+def deletar_agendamento(id_agendamento: int):
+    try:
+        models.deletar_agendamento(id_agendamento)
+        return {"detail": "Agendamento deletado"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
