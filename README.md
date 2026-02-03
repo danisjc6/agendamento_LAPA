@@ -1,7 +1,6 @@
 # Sistema de Agendamento – Laboratório de Anatomia (LAPA)
 
-Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatomia,
-desenvolvido como atividade acadêmica.
+Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatomia, desenvolvido como atividade acadêmica.
 
 ---
 
