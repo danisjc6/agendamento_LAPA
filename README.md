@@ -1,117 +1,101 @@
-# Sistema de Agendamento – Laboratório de Anatomia
+# Sistema de Agendamento – Laboratório de Anatomia (LAPA)
 
-Este projeto consiste em um sistema web para gerenciamento de salas e agendamentos em um laboratório de anatomia, desenvolvido como atividade acadêmica.
+Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatomia,
+desenvolvido como atividade acadêmica.
+
+---
 
 ## 🎯 Objetivo
 
 Facilitar o controle de uso das salas do laboratório, permitindo:
-- Visualizar disponibilidade
-- Criar agendamentos
-- Registrar reservas
-- Cancelar agendamentos
 
-## 🧱 Arquitetura
+- Cadastro de usuários
+- Cadastro de salas
+- Criação de agendamentos
+- Registro de reservas
+- Consulta de disponibilidade
 
-O sistema utiliza uma arquitetura em camadas:
+---
+
+## 🧱 Arquitetura do Sistema
+
+O projeto segue uma arquitetura em camadas:
 
 - **Frontend:** HTML, CSS e JavaScript puro
-- **Backend:** Python com FastAPI
-- **Banco de Dados:** MySQL
+- **Backend:** Python (FastAPI)
+- **Banco de Dados:** MySQL 8
 - **ORM:** SQLAlchemy
-- **Validação:** Pydantic
+- **Containerização:** Docker e Docker Compose
 
-Comunicação realizada via API REST utilizando JSON.
+Comunicação via API REST utilizando JSON.
 
-## 🗄️ Modelagem do Banco
+---
 
-Principais tabelas:
-- Usuario
-- Sala
-- Agendamento
-- Reserva
+## 🗄️ Modelagem do Banco de Dados
 
-Com uso de chaves primárias, chaves estrangeiras e integridade referencial.
+### Entidades principais
 
-## 🚀 Como executar o projeto
+- **Usuario**
+- **Sala**
+- **Agendamento**
+- **Reserva**
 
-### 1️⃣ Banco de Dados
+Relacionamentos com chaves primárias e estrangeiras,
+garantindo integridade referencial.
 
-Crie o banco no MySQL:
+📌 O esquema lógico foi obtido a partir da transformação do MERE
+para o modelo relacional.
 
-```sql
+---
 
-CREATE DATABASE laboratorio_anatomia;
+📖 Dicionário de Dados (Resumo)
+Tabela: Usuario
+| Campo     | Tipo         | Restrições | Descrição                |
+| --------- | ------------ | ---------- | ------------------------ |
+| matricula | INT          | PK         | Identificador do usuário |
+| nome      | VARCHAR(100) | NOT NULL   | Nome do usuário          |
+| email     | VARCHAR(100) |            | Email                    |
+| telefone  | VARCHAR(20)  |            | Contato                  |
+| curso     | VARCHAR(100) |            | Curso do usuário         |
 
-Configure o acesso no arquivo database.py.
+Tabela: Sala
+| Campo      | Tipo         | Restrições | Descrição             |
+| ---------- | ------------ | ---------- | --------------------- |
+| id_sala    | INT          | PK         | Identificador da sala |
+| nome_sala  | VARCHAR(100) | NOT NULL   | Nome da sala          |
+| tipo       | VARCHAR(50)  |            | Tipo da sala          |
+| capacidade | INT          |            | Capacidade máxima     |
 
-2️⃣ Backend
+Tabela: Agendamento
+| Campo      | Tipo         | Restrições | Descrição                   |
+| ---------- | ------------ | ---------- | ----------------------------|
+| id         | INT          | PK         | Identificador do agendamento|
+| matricula  | INT          | NOT NULL   | matricula do usuário        |
+| data       | date         |            | Data do agendamento         |
+| hora_inicio| time         |            | horário do início do agendam|
+| hora_fim   | time         |            | horário do fim do agendam.  |
+| finalidade | varchar(100) |            | Aula, palestra, evento, etc |
+| status     | varchar(100) |            | ativo, cancelado            |
 
-Instale as dependências:
-
-pip install fastapi uvicorn sqlalchemy mysql-connector-python
-
-
-Execute o servidor:
-
-uvicorn main:app --reload
-
-
-A API ficará disponível em:
-
-http://127.0.0.1:8000
-
-
-Documentação automática:
-
-http://127.0.0.1:8000/docs
-
-3️⃣ Frontend
-
-Abra o arquivo index.html no navegador.
-
-📌 Funcionalidades
-
-Listagem de salas
-
-Consulta de disponibilidade
-
-Criação de agendamentos
-
-Reserva de salas
-
-Cancelamento de agendamentos
-
-🧪 Tecnologias Utilizadas
-
-Python
-
-FastAPI
-
-MySQL
-
-SQLAlchemy
-
-Pydantic
-
-HTML
-
-JavaScript
-
-📚 Contexto Acadêmico
-
-Projeto desenvolvido com fins acadêmicos, integrando conceitos de:
-
-Banco de dados relacionais
-
-APIs REST
-
-Programação web
-
-Arquitetura de sistemas
-
-✨ Autora
-
-Daniela Oliveira
+Tabela: Reserva
+| Campo         | Tipo        | Restrições | Descrição                   |
+| ------------- | ------------| ---------- | ----------------------------|
+| id_agendamento| INT         | PK         | Identificador do agendamento|
+| nome_sala     | varchar(100)| NOT NULL   | Nome da sala                |
 
 
+---
+
+## 🧪 Normalização
+
+O esquema está normalizado até **no mínimo a Segunda Forma Normal (2FN)**,
+eliminando dependências parciais e redundâncias.
+
+---
+
+## 🐳 Como executar o projeto (Docker)
+
+### 1️⃣ Subir o banco de dados
+```bash
+docker compose up -d
 
