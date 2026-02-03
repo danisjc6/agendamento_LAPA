@@ -1,77 +1,52 @@
-Sistema de Agendamento – Laboratório de Anatomia
+# Sistema de Agendamento – Laboratório de Anatomia (LAPA)
 
-Sistema web para gerenciamento de salas e agendamentos em um laboratório de anatomia, desenvolvido como atividade acadêmica na disciplina de Banco de Dados.
+Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatomia,
+desenvolvido como atividade acadêmica.
 
-🎯 Objetivo
+---
+
+## 🎯 Objetivo
 
 Facilitar o controle de uso das salas do laboratório, permitindo:
 
-Visualizar salas disponíveis
+- Cadastro de usuários
+- Cadastro de salas
+- Criação de agendamentos
+- Registro de reservas
+- Consulta de disponibilidade
 
-Criar e gerenciar agendamentos
+---
 
-Registrar reservas
+## 🧱 Arquitetura do Sistema
 
-Cancelar agendamentos
+O projeto segue uma arquitetura em camadas:
 
-🧱 Arquitetura do Sistema
+- **Frontend:** HTML, CSS e JavaScript puro
+- **Backend:** Python (FastAPI)
+- **Banco de Dados:** MySQL 8
+- **ORM:** SQLAlchemy
+- **Containerização:** Docker e Docker Compose
 
-O sistema segue uma arquitetura em camadas:
+Comunicação via API REST utilizando JSON.
 
-Frontend: HTML, CSS e JavaScript puro
+---
 
-Backend: Python com FastAPI
+## 🗄️ Modelagem do Banco de Dados
 
-Banco de Dados: MySQL
+### Entidades principais
 
-ORM: SQLAlchemy
+- **Usuario**
+- **Sala**
+- **Agendamento**
+- **Reserva**
 
-```sql
+Relacionamentos com chaves primárias e estrangeiras,
+garantindo integridade referencial.
 
-CREATE DATABASE laboratorio_anatomia;
+📌 O esquema lógico foi obtido a partir da transformação do MERE
+para o modelo relacional.
 
-A comunicação é realizada via API REST, utilizando JSON.
-
-🗂️ Modelagem do Banco de Dados
-📌 Esquema Conceitual (MERE)
-
-O modelo conceitual contempla as seguintes entidades principais:
-
-Usuário
-
-Sala
-
-Agendamento
-
-Reserva
-
-Relacionamentos:
-
-Um usuário pode realizar vários agendamentos
-
-Um agendamento pode estar associado a uma sala por meio de uma reserva
-
-(Diagrama conceitual pode ser inserido aqui como imagem ou link)
-
-📌 Esquema Lógico (Modelo Relacional)
-
-Tabelas resultantes da transformação do MERE:
-
-usuarios
-
-salas
-
-agendamentos
-
-reservas
-
-Com uso de:
-
-Chaves primárias
-
-Chaves estrangeiras
-
-Integridade referencial
+---
 
 📖 Dicionário de Dados (Resumo)
 Tabela: Usuario
@@ -109,89 +84,19 @@ Tabela: Reserva
 | nome_sala     | varchar(100)| NOT NULL   | Nome da sala                |
 
 
-🧪 Normalização
+*(demais tabelas descritas nos scripts SQL)*
 
-O banco de dados encontra-se normalizado até a Segunda Forma Normal (2FN), garantindo:
+---
 
-Eliminação de dependências parciais
+## 🧪 Normalização
 
-Não redundância de dados
+O esquema está normalizado até **no mínimo a Segunda Forma Normal (2FN)**,
+eliminando dependências parciais e redundâncias.
 
-Integridade relacional
+---
 
-🐳 Execução com Docker
-Pré-requisitos
+## 🐳 Como executar o projeto (Docker)
 
-Docker
-
-Docker Compose
-
-Subir o sistema
+### 1️⃣ Subir o banco de dados
+```bash
 docker compose up -d
-
-
-Serviços criados:
-
-MySQL
-
-Backend FastAPI
-
-🗄️ Criação e Carga do Banco de Dados
-
-O banco é criado e povoado automaticamente via Docker, utilizando scripts SQL localizados na pasta:
-
-/database
-├── ddl.sql
-└── dml.sql
-
-
-schema.sql: criação das tabelas (DDL)
-
-dados_iniciais.sql: inserção de dados de teste (DML)
-
-🌐 Acesso ao Sistema
-
-API: http://localhost:8000
-
-Documentação Swagger: http://localhost:8000/docs
-
-Frontend: abrir frontend_lab_anatomia/index.html
-
-🧪 Tecnologias Utilizadas
-
-Python
-
-FastAPI
-
-MySQL
-
-SQLAlchemy
-
-Pydantic
-
-Docker
-
-HTML, CSS e JavaScript
-
-📚 Contexto Acadêmico
-
-Projeto desenvolvido com fins acadêmicos, integrando conceitos de:
-
-Modelagem conceitual e lógica de dados
-
-Normalização
-
-Bancos de dados relacionais
-
-APIs REST
-
-Programa
-
-Containerização com Docker
-
-✨ Autora
-
-Daniela Oliveira
-
-
-
