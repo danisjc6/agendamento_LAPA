@@ -6,7 +6,6 @@ from models.usuario import Usuario
 from schemas import UsuarioCreate, UsuarioResponse
 
 router = APIRouter(
-    prefix="/usuarios",
     tags=["Usuários"]
 )
 

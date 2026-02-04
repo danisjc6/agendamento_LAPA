@@ -2,16 +2,16 @@ from sqlalchemy import Column, Integer, ForeignKey
 from models.base import Base
 
 class Reserva(Base):
-    __tablename__ = "Reserva"
+    __tablename__ = "reservas"
 
     id_agendamento = Column(
         Integer,
-        ForeignKey("Agendamento.id"),
+        ForeignKey("agendamento.id_agendamento"),
         primary_key=True
     )
 
     id_sala = Column(
         Integer,
-        ForeignKey("Sala.id_sala"),
+        ForeignKey("salas.id_sala"),
         nullable=False
     )

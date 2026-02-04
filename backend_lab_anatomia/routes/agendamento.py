@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from database import get_db
 from schemas import AgendamentoCreate, AgendamentoResponse
 
-router = APIRouter(prefix="/agendamentos", tags=["Agendamentos"])
+router = APIRouter(tags=["Agendamentos"])
 
 @router.post("/", response_model=AgendamentoResponse)
 def criar_agendamento(ag: AgendamentoCreate):
@@ -62,7 +62,7 @@ from database import get_db
 from models import Agendamento
 from schemas import CancelamentoRequest
 
-router = APIRouter(prefix="/agendamentos", tags=["Agendamentos"])
+router = APIRouter(tags=["Agendamentos"])
 
 
 @router.put("/{id_agendamento}/cancelar")

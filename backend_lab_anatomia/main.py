@@ -149,3 +149,8 @@ def deletar_agendamento(id_agendamento: int):
         return {"detail": "Agendamento deletado"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/")
+def root():
+    return {"status": "API do Laboratório de Anatomia rodando"}
+

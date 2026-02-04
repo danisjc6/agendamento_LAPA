@@ -6,7 +6,7 @@ from schemas import ReservaDetalhada
 from schemas import ReservaCreate
 
 
-router = APIRouter(prefix="/reservas", tags=["Reservas"])
+router = APIRouter(tags=["Reservas"])
 
 
 @router.get("/", response_model=list[ReservaDetalhada])
@@ -92,7 +92,6 @@ from models.agendamento import Agendamento
 from schemas import ReservaCreate
 
 router = APIRouter(
-    prefix="/reservas",
     tags=["Reservas"]
 )
 

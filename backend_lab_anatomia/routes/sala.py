@@ -8,7 +8,6 @@ from models.reserva import Reserva
 from schemas import HorarioDisponibilidade
 
 router = APIRouter(
-    prefix="/salas",
     tags=["Salas"]
 )
 

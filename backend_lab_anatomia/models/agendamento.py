@@ -2,10 +2,10 @@ from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey
 from models.base import Base
 
 class Agendamento(Base):
-    __tablename__ = "Agendamento"
+    __tablename__ = "agendamentos"
 
     id = Column(Integer, primary_key=True, index=True)
-    matricula = Column(Integer, ForeignKey("Usuario.matricula"), nullable=False)
+    matricula = Column(Integer, ForeignKey("usuarios.matricula"), nullable=False)
 
     data = Column(Date)
     hora_inicio = Column(Time)
