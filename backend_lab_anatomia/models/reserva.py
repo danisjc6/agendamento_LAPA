@@ -6,7 +6,7 @@ class Reserva(Base):
 
     id_agendamento = Column(
         Integer,
-        ForeignKey("agendamento.id_agendamento"),
+        ForeignKey("agendamentos.id_agendamento"),
         primary_key=True
     )
 

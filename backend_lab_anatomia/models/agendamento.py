@@ -10,5 +10,5 @@ class Agendamento(Base):
     data = Column(Date)
     hora_inicio = Column(Time)
     hora_fim = Column(Time)
-    finalidade = Column(String(100))
+    finalidade = Column(String(255))
     status = Column(String(20))

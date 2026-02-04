@@ -21,9 +21,9 @@ def listar_reservas(db: Session = Depends(get_db)):
             Agendamento.status,
             Sala.nome_sala,
             Usuario.matricula,
-            Usuario.nome.label("nome_usuario"),
+            Usuario.nome,
         )
-        .join(Reserva, Reserva.id_agendamento == Agendamento.id)
+        .join(Reserva, Reserva.id_agendamento == Agendamento.id_agendamento)
         .join(Sala, Sala.id_sala == Reserva.id_sala)
         .join(Usuario, Usuario.matricula == Agendamento.matricula)
         .order_by(Agendamento.data, Agendamento.hora_inicio)
@@ -40,7 +40,7 @@ def criar_reserva(
     # 1️⃣ Buscar o agendamento
     agendamento = (
         db.query(Agendamento)
-        .filter(Agendamento.id == reserva.id_agendamento)
+        .filter(Agendamento.id_agendamento == reserva.id_agendamento)
         .first()
     )
 
@@ -100,7 +100,7 @@ def criar_reserva(reserva: ReservaCreate, db: Session = Depends(get_db)):
 
     # 🔎 Buscar agendamento
     agendamento = db.query(Agendamento).filter(
-        Agendamento.id == reserva.id_agendamento
+        Agendamento.id_agendamento == reserva.id_agendamento
     ).first()
 
     if not agendamento:
@@ -109,7 +109,7 @@ def criar_reserva(reserva: ReservaCreate, db: Session = Depends(get_db)):
     # 🚫 Verificar conflito de horário
     conflito = (
         db.query(Reserva)
-        .join(Agendamento, Reserva.id_agendamento == Agendamento.id)
+        .join(Agendamento, Reserva.id_agendamento == Agendamento.id_agendamento)
         .filter(
             Reserva.id_sala == reserva.id_sala,
             Agendamento.data == agendamento.data,

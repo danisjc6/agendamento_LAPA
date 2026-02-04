@@ -8,6 +8,6 @@ class Usuario(Base):
     nome = Column(String(100), nullable=False)
     email = Column(String(100))
     telefone = Column(String(20))
-    curso = Column(String(50))
+    curso = Column(String(100))
 
 
