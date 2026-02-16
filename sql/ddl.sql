@@ -38,3 +38,64 @@ CREATE TABLE reservas (
       FOREIGN KEY (id_sala) REFERENCES salas(id_sala),
     CONSTRAINT uk_reserva UNIQUE (id_agendamento, id_sala)
 );
+
+CREATE VIEW vw_agendamentos_detalhados AS
+SELECT
+    a.id_agendamento,
+    u.nome AS usuario_nome,
+    u.email,
+    s.nome_sala,
+    s.tipo,
+    s.capacidade,
+    a.data,
+    a.hora_inicio,
+    a.hora_fim,
+    a.finalidade,
+    a.status
+FROM agendamentos a
+JOIN usuarios u 
+    ON a.matricula = u.matricula
+JOIN reservas r 
+    ON a.id_agendamento = r.id_agendamento
+JOIN salas s 
+    ON r.id_sala = s.id_sala;
+
+
+CREATE VIEW vw_salas_mais_utilizadas AS
+SELECT
+    s.nome_sala,
+    COUNT(r.id_reserva) AS total_reservas
+FROM salas s
+LEFT JOIN reservas r ON s.id_sala = r.id_sala
+GROUP BY s.nome_sala;
+
+CREATE VIEW vw_agendamentos_ativos AS
+SELECT *
+FROM vw_agendamentos_detalhados
+WHERE status = 'ativo';
+
+
+CREATE OR REPLACE VIEW vw_ocupacao_salas_por_data AS
+SELECT
+    s.nome_sala AS sala,
+    a.data AS data_agendamento,
+    COUNT(r.id_reserva) AS total_agendamentos
+FROM salas s
+JOIN reservas r ON s.id_sala = r.id_sala
+JOIN agendamentos a ON r.id_agendamento = a.id_agendamento
+GROUP BY s.nome_sala, a.data;
+
+
+CREATE OR REPLACE VIEW vw_salas_livres AS
+SELECT
+    s.id_sala,
+    s.nome_sala,
+    s.tipo,
+    s.capacidade
+FROM salas s
+WHERE s.id_sala NOT IN (
+    SELECT r.id_sala
+    FROM reservas r
+    JOIN agendamentos a ON r.id_agendamento = a.id_agendamento
+    WHERE a.data = CURRENT_DATE()
+);

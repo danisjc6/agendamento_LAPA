@@ -1,67 +1,163 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
+from fastapi import APIRouter, HTTPException
+from typing import List
 from database import get_db
-from models.usuario import Usuario
 from schemas import UsuarioCreate, UsuarioResponse
 
 router = APIRouter(
-    tags=["Usuários"]
+    prefix="/usuarios",
+    tags=["Usuarios"]
 )
 
+
 # =========================
-# Criar usuário
+# CRIAR USUÁRIO
 # =========================
 @router.post("/", response_model=UsuarioResponse)
-def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
+def criar_usuario(usuario: UsuarioCreate):
 
-    usuario_existente = db.query(Usuario).filter(
-        Usuario.matricula == usuario.matricula
-    ).first()
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
 
-    if usuario_existente:
-        raise HTTPException(
-            status_code=400,
-            detail="Usuário com essa matrícula já existe"
+    query = """
+        INSERT INTO Usuario (matricula, nome, email, tipo)
+        VALUES (%s, %s, %s, %s)
+    """
+
+    try:
+        cursor.execute(query, (
+            usuario.matricula,
+            usuario.nome,
+            usuario.email,
+            usuario.tipo
+        ))
+        conn.commit()
+
+        cursor.execute(
+            "SELECT * FROM Usuario WHERE matricula = %s",
+            (usuario.matricula,)
         )
 
-    novo_usuario = Usuario(
-        matricula=usuario.matricula,
-        nome=usuario.nome,
-        email=usuario.email,
-        telefone=usuario.telefone,
-        curso=usuario.curso
-    )
+        novo_usuario = cursor.fetchone()
 
-    db.add(novo_usuario)
-    db.commit()
-    db.refresh(novo_usuario)
+        return novo_usuario
 
-    return novo_usuario
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
 
 
 # =========================
-# Listar usuários
+# LISTAR USUÁRIOS
 # =========================
-@router.get("/", response_model=list[UsuarioResponse])
-def listar_usuarios(db: Session = Depends(get_db)):
-    return db.query(Usuario).all()
+@router.get("/", response_model=List[UsuarioResponse])
+def listar_usuarios():
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM Usuario")
+    usuarios = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return usuarios
 
 
 # =========================
-# Buscar usuário por matrícula
+# PEGAR USUÁRIO POR MATRÍCULA
 # =========================
 @router.get("/{matricula}", response_model=UsuarioResponse)
-def buscar_usuario(matricula: int, db: Session = Depends(get_db)):
+def pegar_usuario(matricula: int):
 
-    usuario = db.query(Usuario).filter(
-        Usuario.matricula == matricula
-    ).first()
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT * FROM Usuario WHERE matricula = %s",
+        (matricula,)
+    )
+
+    usuario = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
 
     if not usuario:
-        raise HTTPException(
-            status_code=404,
-            detail="Usuário não encontrado"
-        )
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     return usuario
+
+
+# =========================
+# ATUALIZAR USUÁRIO
+# =========================
+@router.put("/{matricula}", response_model=UsuarioResponse)
+def atualizar_usuario(matricula: int, usuario: UsuarioCreate):
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            UPDATE Usuario
+            SET nome = %s,
+                email = %s,
+                tipo = %s
+            WHERE matricula = %s
+        """, (
+            usuario.nome,
+            usuario.email,
+            usuario.tipo,
+            matricula
+        ))
+
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        cursor.execute(
+            "SELECT * FROM Usuario WHERE matricula = %s",
+            (matricula,)
+        )
+
+        usuario_atualizado = cursor.fetchone()
+        return usuario_atualizado
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# =========================
+# DELETAR USUÁRIO
+# =========================
+@router.delete("/{matricula}")
+def deletar_usuario(matricula: int):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "DELETE FROM Usuario WHERE matricula = %s",
+            (matricula,)
+        )
+
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        return {"detail": "Usuário deletado com sucesso"}
+
+    finally:
+        cursor.close()
+        conn.close()

@@ -1,17 +1,17 @@
 from datetime import date, datetime, time, timedelta
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
-
+from fastapi import APIRouter, Query
 from database import get_db
-from models.agendamento import Agendamento
-from models.reserva import Reserva
 from schemas import HorarioDisponibilidade
 
 router = APIRouter(
+    prefix="/salas",
     tags=["Salas"]
 )
 
 
+# =========================
+# GERAR BLOCOS DE 1H
+# =========================
 def gerar_blocos():
     inicio = time(8, 0)
     fim = time(18, 0)
@@ -27,37 +27,53 @@ def gerar_blocos():
     return blocos
 
 
+# =========================
+# VERIFICAR DISPONIBILIDADE
+# =========================
 @router.get(
     "/{id_sala}/disponibilidade",
     response_model=list[HorarioDisponibilidade]
 )
 def verificar_disponibilidade(
     id_sala: int,
-    data: date = Query(...),   # 👈 ISSO É ESSENCIAL
-    db: Session = Depends(get_db)
+    data: date = Query(...)
 ):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
     blocos = gerar_blocos()
 
-    reservas = (
-        db.query(Reserva)
-        .join(Agendamento)
-        .filter(
-            Reserva.id_sala == id_sala,
-            Agendamento.data == data,
-            Agendamento.status == "ativo"
-        )
-        .all()
-    )
+    # 🔎 Buscar reservas ativas da sala na data
+    query = """
+        SELECT a.hora_inicio, a.hora_fim
+        FROM Reserva r
+        JOIN Agendamento a ON r.id_agendamento = a.id_agendamento
+        WHERE r.id_sala = %s
+          AND a.data = %s
+          AND a.status = 'ativo'
+    """
 
+    cursor.execute(query, (id_sala, data))
+    reservas = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    # 🔴 Identificar horários ocupados
     ocupados = set()
-    for r in reservas:
-        ag = r.agendamento
-        atual = ag.hora_inicio
-        while atual < ag.hora_fim:
-            ocupados.add(atual)
-            atual = (datetime.combine(date.today(), atual) + timedelta(hours=1)).time()
 
+    for r in reservas:
+        atual = r["hora_inicio"]
+
+        while atual < r["hora_fim"]:
+            ocupados.add(atual)
+            atual = (
+                datetime.combine(date.today(), atual) + timedelta(hours=1)
+            ).time()
+
+    # 🟢 Gerar lista de disponíveis
     disponiveis = []
+
     for inicio, fim in blocos:
         if inicio not in ocupados:
             disponiveis.append(

@@ -41,6 +41,7 @@ class SalaCreate(SalaBase):
 
 class AgendamentoBase(BaseModel):
     matricula: int
+    id_sala: int
     data: date
     hora_inicio: time
     hora_fim: time
@@ -49,7 +50,14 @@ class AgendamentoBase(BaseModel):
 
 
 class AgendamentoCreate(AgendamentoBase):
-    pass
+    matricula: int
+    id_sala: int
+    data: date
+    hora_inicio: time
+    hora_fim: time
+    finalidade: str
+    status: str = "ativo"
+
 
 
 class AgendamentoResponse(AgendamentoBase):
@@ -92,3 +100,45 @@ class CancelamentoRequest(BaseModel):
 class ReservaCreate(BaseModel):
     id_agendamento: int
     id_sala: int
+
+
+# Views
+
+# =========================
+# AGENDAMENTOS
+# =========================
+
+class AgendamentoDetalhado(BaseModel):
+    agendamento_id: int
+    usuario_nome: str
+    usuario_email: str
+    sala_nome: str
+    capacidade: int
+    data: date
+    hora_inicio: time
+    hora_fim: time
+    finalidade: Optional[str]
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# =========================
+# OCUPAÇÃO SALAS
+# =========================
+
+class OcupacaoSala(BaseModel):
+    sala_nome: str
+    total_agendamentos: int
+
+
+# =========================
+# ESTATÍSTICAS
+# =========================
+
+
+
+class SalaMaisUtilizada(BaseModel):
+    sala_nome: str
+    total_uso: int
