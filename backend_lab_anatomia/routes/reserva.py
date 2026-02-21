@@ -27,7 +27,7 @@ def listar_reservas():
         a.status,
         s.nome_sala,
         u.matricula,
-        u.nome
+        u.nome AS nome_usuario
     FROM reservas r
     JOIN agendamentos a ON r.id_agendamento = a.id_agendamento
     JOIN salas s ON r.id_sala = s.id_sala

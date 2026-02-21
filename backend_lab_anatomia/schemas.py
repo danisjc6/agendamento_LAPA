@@ -18,9 +18,6 @@ class UsuarioCreate(UsuarioBase):
 class UsuarioResponse(UsuarioBase):
     matricula: int
 
-    class Config:
-        from_attributes = True
-
 
 
 class SalaBase(BaseModel):
@@ -31,8 +28,6 @@ class SalaBase(BaseModel):
 class SalaResponse(SalaBase):
     id_sala: int
 
-    class Config:
-        from_attributes = True
 
 class SalaCreate(SalaBase):
     pass
@@ -59,13 +54,8 @@ class AgendamentoCreate(AgendamentoBase):
     status: str = "ativo"
 
 
-
 class AgendamentoResponse(AgendamentoBase):
-    id: int
-
-    class Config:
-        from_attributes = True
-
+    id_agendamento: int
 
 
 class HorarioDisponibilidade(BaseModel):
@@ -81,14 +71,9 @@ class ReservaDetalhada(BaseModel):
     hora_fim: time
     finalidade: str
     status: str
-
     nome_sala: str
-
     matricula: int
     nome_usuario: str
-
-    class Config:
-        from_attributes = True
 
 
 
@@ -110,9 +95,9 @@ class ReservaCreate(BaseModel):
 
 class AgendamentoDetalhado(BaseModel):
     agendamento_id: int
-    usuario_nome: str
-    usuario_email: str
-    sala_nome: str
+    nome_usuario: str
+    email_usuario: str
+    nome_sala: str
     capacidade: int
     data: date
     hora_inicio: time
@@ -120,9 +105,7 @@ class AgendamentoDetalhado(BaseModel):
     finalidade: Optional[str]
     status: str
 
-    class Config:
-        from_attributes = True
-
+    
 
 # =========================
 # OCUPAÇÃO SALAS

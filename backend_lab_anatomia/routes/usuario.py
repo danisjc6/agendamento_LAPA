@@ -8,7 +8,6 @@ router = APIRouter(
     tags=["Usuarios"]
 )
 
-
 # =========================
 # CRIAR USUÁRIO
 # =========================
@@ -19,8 +18,8 @@ def criar_usuario(usuario: UsuarioCreate):
     cursor = conn.cursor(dictionary=True)
 
     query = """
-        INSERT INTO Usuario (matricula, nome, email, tipo)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO usuarios (matricula, nome, email, telefone, curso)
+        VALUES (%s, %s, %s, %s, %s)
     """
 
     try:
@@ -28,17 +27,17 @@ def criar_usuario(usuario: UsuarioCreate):
             usuario.matricula,
             usuario.nome,
             usuario.email,
-            usuario.tipo
+            usuario.telefone,
+            usuario.curso
         ))
         conn.commit()
 
         cursor.execute(
-            "SELECT * FROM Usuario WHERE matricula = %s",
+            "SELECT * FROM usuarios WHERE matricula = %s",
             (usuario.matricula,)
         )
 
         novo_usuario = cursor.fetchone()
-
         return novo_usuario
 
     except Exception as e:
@@ -58,7 +57,7 @@ def listar_usuarios():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM Usuario")
+    cursor.execute("SELECT * FROM usuarios")
     usuarios = cursor.fetchall()
 
     cursor.close()
@@ -77,7 +76,7 @@ def pegar_usuario(matricula: int):
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT * FROM Usuario WHERE matricula = %s",
+        "SELECT * FROM usuarios WHERE matricula = %s",
         (matricula,)
     )
 
@@ -103,15 +102,17 @@ def atualizar_usuario(matricula: int, usuario: UsuarioCreate):
 
     try:
         cursor.execute("""
-            UPDATE Usuario
+            UPDATE usuarios
             SET nome = %s,
                 email = %s,
-                tipo = %s
+                telefone = %s,
+                curso = %s
             WHERE matricula = %s
         """, (
             usuario.nome,
             usuario.email,
-            usuario.tipo,
+            usuario.telefone,
+            usuario.curso,
             matricula
         ))
 
@@ -121,7 +122,7 @@ def atualizar_usuario(matricula: int, usuario: UsuarioCreate):
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         cursor.execute(
-            "SELECT * FROM Usuario WHERE matricula = %s",
+            "SELECT * FROM usuarios WHERE matricula = %s",
             (matricula,)
         )
 
@@ -147,7 +148,7 @@ def deletar_usuario(matricula: int):
 
     try:
         cursor.execute(
-            "DELETE FROM Usuario WHERE matricula = %s",
+            "DELETE FROM usuarios WHERE matricula = %s",
             (matricula,)
         )
 

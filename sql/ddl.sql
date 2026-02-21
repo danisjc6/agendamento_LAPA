@@ -42,7 +42,7 @@ CREATE TABLE reservas (
 CREATE VIEW vw_agendamentos_detalhados AS
 SELECT
     a.id_agendamento,
-    u.nome AS usuario_nome,
+    u.nome AS nome_usuario,
     u.email,
     s.nome_sala,
     s.tipo,
@@ -78,7 +78,7 @@ WHERE status = 'ativo';
 CREATE OR REPLACE VIEW vw_ocupacao_salas_por_data AS
 SELECT
     s.nome_sala AS sala,
-    a.data AS data_agendamento,
+    a.data,
     COUNT(r.id_reserva) AS total_agendamentos
 FROM salas s
 JOIN reservas r ON s.id_sala = r.id_sala

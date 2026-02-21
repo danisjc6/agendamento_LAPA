@@ -46,8 +46,8 @@ def verificar_disponibilidade(
     # 🔎 Buscar reservas ativas da sala na data
     query = """
         SELECT a.hora_inicio, a.hora_fim
-        FROM Reserva r
-        JOIN Agendamento a ON r.id_agendamento = a.id_agendamento
+        FROM reservas r
+        JOIN agendamentos a ON r.id_agendamento = a.id_agendamento
         WHERE r.id_sala = %s
           AND a.data = %s
           AND a.status = 'ativo'
