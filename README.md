@@ -23,8 +23,7 @@ O projeto segue uma arquitetura em camadas:
 - **Frontend:** HTML, CSS e JavaScript puro
 - **Backend:** Python (FastAPI)
 - **Banco de Dados:** MySQL 8
-- **ORM:** SQLAlchemy
-- **Containerização:** Docker e Docker Compose
+- **Containerização:** Docker e Docker-Compose
 
 Comunicação via API REST utilizando JSON.
 
