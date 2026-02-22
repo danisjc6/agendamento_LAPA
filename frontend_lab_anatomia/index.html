@@ -2,117 +2,222 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento – LAPA</title>
+
     <style>
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #2563eb;
+            --danger: #c62828;
+            --bg: #f4f6f9;
+            --card-bg: #ffffff;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: var(--bg);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 40px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 30px 40px;
+            display: grid;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         h2 {
-            margin-top: 40px;
+            margin-top: 0;
+            color: var(--primary);
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
             margin-top: 10px;
         }
 
-        table, th, td {
-            border: 1px solid #ccc;
+        th {
+            background-color: #e8eef5;
         }
 
         th, td {
             padding: 8px;
             text-align: center;
+            border-bottom: 1px solid #ddd;
         }
 
         tr:hover {
             background-color: #f2f2f2;
-            cursor: pointer;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
         }
 
         .btn {
-            padding: 6px 12px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: none;
             cursor: pointer;
+            font-weight: 500;
         }
 
-        .btn-cancelar {
-            background-color: #c62828;
+        .btn-primary {
+            background-color: var(--secondary);
             color: white;
-            border: none;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feedback {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .feedback.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body>
 
-<h1>Agendamento de Salas – Laboratório de Anatomia</h1>
+<body data-page="agendamentos">
 
-<!-- SALAS -->
-<h2>1. Salas</h2>
-<table id="tabelaSalas">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Tipo</th>
-            <th>Capacidade</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<header>
+    <h1>Laboratório de Anatomia – LAPA</h1>
+    <p>Sistema de Agendamento de Salas</p>
+</header>
 
-<!-- DATA -->
-<h2>2. Data</h2>
-<input type="date" id="dataSelecionada">
+<main>
 
-<!-- DISPONIBILIDADE -->
-<h2>3. Horários</h2>
-<table id="tabelaHorarios">
-    <thead>
-        <tr>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <!-- Seleção -->
+    <div class="card">
+        <h2>1️⃣ Selecionar Sala e Data</h2>
 
-<!-- FORMULÁRIO -->
-<h2>4. Criar Agendamento</h2>
-<form id="formAgendamento">
-    <label>Matrícula:</label><br>
-    <input type="number" id="matricula" required><br><br>
+        <div class="grid-2">
+            <div>
+                <label>Data:</label>
+                <input type="date" id="dataSelecionada">
+            </div>
+        </div>
 
-    <label>Hora início:</label><br>
-    <input type="time" id="horaInicio" required><br><br>
+        <h3>Salas Disponíveis</h3>
+        <table id="tabelaSalas">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Capacidade</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
-    <label>Hora fim:</label><br>
-    <input type="time" id="horaFim" required><br><br>
+    <!-- Horários -->
+    <div class="card">
+        <h2>2️⃣ Horários Disponíveis</h2>
 
-    <label>Finalidade:</label><br>
-    <input type="text" id="finalidade"><br><br>
+        <table id="tabelaHorarios">
+            <thead>
+                <tr>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
-    <button class="btn" type="submit">Agendar</button>
-</form>
+    <!-- Criar Agendamento -->
+    <div class="card">
+        <h2>3️⃣ Criar Agendamento</h2>
 
-<!-- AGENDAMENTOS -->
-<h2>5. Agendamentos</h2>
-<table id="tabelaAgendamentos">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Data</th>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Status</th>
-            <th>Ação</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+        <div id="feedback" class="feedback"></div>
+
+        <form id="formAgendamento">
+            <label>Matrícula:</label>
+            <input type="number" id="matricula" required>
+
+            <label>Hora início:</label>
+            <input type="time" id="horaInicio" required>
+
+            <label>Hora fim:</label>
+            <input type="time" id="horaFim" required>
+
+            <label>Finalidade:</label>
+            <input type="text" id="finalidade">
+
+            <button class="btn btn-primary" type="submit">
+                Confirmar Agendamento
+            </button>
+        </form>
+    </div>
+
+    <!-- Agendamentos -->
+    <div class="card">
+        <h2>4️⃣ Agendamentos Registrados</h2>
+
+        <table id="tabelaAgendamentos">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+</main>
 
 <script src="js/api.js"></script>
 <script src="js/salas.js"></script>

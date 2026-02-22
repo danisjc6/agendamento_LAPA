@@ -1,7 +1,14 @@
-document.getElementById("dataSelecionada")
-    .addEventListener("change", carregarDisponibilidade);
+window.addEventListener("DOMContentLoaded", () => {
+    const pagina = document.body.dataset.page;
 
-window.onload = () => {
-    carregarSalas();
-    listarAgendamentos();
-};
+    switch (pagina) {
+        case "agendamentos":
+            carregarSalas();
+            listarAgendamentos();
+            break;
+
+        case "usuarios":
+            atualizarTabela("usuarios");
+            break;
+    }
+});
