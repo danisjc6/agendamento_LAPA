@@ -40,7 +40,7 @@ document.getElementById("formAgendamento").onsubmit = async (e) => {
     await apiFetch("/reservas", {
         method: "POST",
         body: JSON.stringify({
-            id_agendamento: agendamento.id,
+            id_agendamento: a.id_agendamento,
             id_sala: salaSelecionada.id_sala
         })
     });
@@ -58,14 +58,14 @@ async function listarAgendamentos() {
     lista.forEach(a => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${a.id}</td>
+            <td>${a.id_agendamento}</td>
             <td>${a.data}</td>
             <td>${a.hora_inicio}</td>
             <td>${a.hora_fim}</td>
             <td>${a.status}</td>
             <td>
                 <button class="btn btn-cancelar"
-                    onclick="cancelarAgendamento(${a.id})">
+                    onclick="cancelarAgendamento(${a.id_agendamento})">
                     Cancelar
                 </button>
             </td>
@@ -74,8 +74,8 @@ async function listarAgendamentos() {
     });
 }
 
-async function cancelarAgendamento(id) {
-    await apiFetch(`/agendamentos/${id}/cancelar`, {
+async function cancelarAgendamento(id_agendamento) {
+    await apiFetch(`/agendamentos/${id_agendamento}/cancelar`, {
         method: "POST"
     });
 

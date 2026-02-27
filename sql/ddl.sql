@@ -69,6 +69,7 @@ FROM salas s
 LEFT JOIN reservas r ON s.id_sala = r.id_sala
 GROUP BY s.nome_sala;
 
+
 CREATE VIEW vw_agendamentos_ativos AS
 SELECT *
 FROM vw_agendamentos_detalhados

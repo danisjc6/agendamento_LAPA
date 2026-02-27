@@ -72,14 +72,14 @@ class ReservaDetalhada(BaseModel):
     finalidade: str
     status: str
     nome_sala: str
+    capacidade: int
     matricula: int
     nome_usuario: str
-
+    email_usuario: str
 
 
 class CancelamentoRequest(BaseModel):
     motivo: str | None = None
-
 
 
 class ReservaCreate(BaseModel):
@@ -94,17 +94,17 @@ class ReservaCreate(BaseModel):
 # =========================
 
 class AgendamentoDetalhado(BaseModel):
-    agendamento_id: int
-    nome_usuario: str
-    email_usuario: str
-    nome_sala: str
-    capacidade: int
+    id_agendamento: int
     data: date
     hora_inicio: time
     hora_fim: time
-    finalidade: Optional[str]
+    finalidade: str
     status: str
-
+    nome_sala: str
+    capacidade: int
+    matricula: int
+    nome_usuario: str
+    email_usuario: str
     
 
 # =========================

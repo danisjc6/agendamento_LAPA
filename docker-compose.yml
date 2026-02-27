@@ -1,4 +1,7 @@
+version: "3.9"
+
 services:
+
   mysql:
     image: mysql:8.0
     container_name: mysql_laboratorio
@@ -14,6 +17,29 @@ services:
       - mysql_data:/var/lib/mysql
       - ./sql/ddl.sql:/docker-entrypoint-initdb.d/1-setup.sql
       - ./sql/dml.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  backend:
+    build: ./backend_lab_anatomia
+    container_name: backend_laboratorio
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: lab_user
+      DB_PASSWORD: lab_pass
+      DB_NAME: laboratorio_anatomia
+
+  frontend:
+    build: ./frontend_lab_anatomia
+    container_name: frontend_laboratorio
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
 
 volumes:
   mysql_data:

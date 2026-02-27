@@ -65,26 +65,95 @@ Tabela: Sala
 | capacidade | INT          |            | Capacidade máxima     |
 
 Tabela: Agendamento
-| Campo      | Tipo         | Restrições | Descrição                   |
-| ---------- | ------------ | ---------- | ----------------------------|
-| id         | INT          | PK         | Identificador do agendamento|
-| matricula  | INT          | NOT NULL   | matricula do usuário        |
-| data       | date         |            | Data do agendamento         |
-| hora_inicio| time         |            | horário do início do agendam|
-| hora_fim   | time         |            | horário do fim do agendam.  |
-| finalidade | varchar(100) |            | Aula, palestra, evento, etc |
-| status     | varchar(100) |            | ativo, cancelado            |
+| Campo          | Tipo         | Restrições | Descrição                   |
+| ----------     | ------------ | ---------- | ----------------------------|
+| id_agendamento | INT          | PK         | Identificador do agendamento|
+| matricula (FK) | INT          | NOT NULL   | matricula do usuário        |
+| data           | date         |            | Data do agendamento         |
+| hora_inicio    | time         |            | horário do início do agendam|
+| hora_fim       | time         |            | horário do fim do agendam.  |
+| finalidade     | varchar(100) |            | Aula, palestra, evento, etc |
+| status         | varchar(100) |            | ativo, cancelado            |
 
 Tabela: Reserva
-| Campo         | Tipo        | Restrições | Descrição                   |
-| ------------- | ------------| ---------- | ----------------------------|
-| id_agendamento| INT         | PK         | Identificador do agendamento|
-| nome_sala     | varchar(100)| NOT NULL   | Nome da sala                |
+| Campo               | Tipo        | Restrições | Descrição                   |
+| -------------       | ------------| ---------- | ----------------------------|
+| id_agendamento (FK) | INT         | PK         | Identificador do agendamento|
+| nome_sala (FK)      | varchar(100)| NOT NULL   |Nome da sala                 |
 
 
-*(demais tabelas descritas nos scripts SQL)*
+VIEWS
+
+Tabela: Agendamento Detalhado (vw_agendamento_detalhado)
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| id_agendamento | int          | NO   |     | 0       |       |
+| usuario_nome   | varchar(100) | NO   |     | NULL    |       |
+| email          | varchar(100) | YES  |     | NULL    |       |
+| nome_sala      | varchar(100) | NO   |     | NULL    |       |
+| tipo           | varchar(50)  | YES  |     | NULL    |       |
+| capacidade     | int          | YES  |     | NULL    |       |
+| data           | date         | NO   |     | NULL    |       |
+| hora_inicio    | time         | NO   |     | NULL    |       |
+| hora_fim       | time         | NO   |     | NULL    |       |
+| finalidade     | varchar(255) | YES  |     | NULL    |       |
+| status         | varchar(20)  | YES  |     | ativo   |       |
++----------------+--------------+------+-----+---------+-------+
+
+Tabela: Agendamentos ativos (vw_agendamentos_ativos)
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| id_agendamento | int          | NO   |     | 0       |       |
+| usuario_nome   | varchar(100) | NO   |     | NULL    |       |
+| email          | varchar(100) | YES  |     | NULL    |       |
+| nome_sala      | varchar(100) | NO   |     | NULL    |       |
+| tipo           | varchar(50)  | YES  |     | NULL    |       |
+| capacidade     | int          | YES  |     | NULL    |       |
+| data           | date         | NO   |     | NULL    |       |
+| hora_inicio    | time         | NO   |     | NULL    |       |
+| hora_fim       | time         | NO   |     | NULL    |       |
+| finalidade     | varchar(255) | YES  |     | NULL    |       |
+| status         | varchar(20)  | YES  |     | ativo   |       |
++----------------+--------------+------+-----+---------+-------+
+
+
+Tabela: Salas mais utilizadas (vw_salas_mais_utilizadas)
+
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| nome_sala      | varchar(100) | NO   |     | NULL    |       |
+| total_reservas | bigint       | NO   |     | 0       |       |
++----------------+--------------+------+-----+---------+-------+
+
+Tabela: Ocupação de salas por data(vw_ocupacao_salas_por_data)
+
++--------------------+--------------+------+-----+---------+-------+
+| Field              | Type         | Null | Key | Default | Extra |
++--------------------+--------------+------+-----+---------+-------+
+| sala               | varchar(100) | NO   |     | NULL    |       |
+| data_agendamento   | date         | NO   |     | NULL    |       |
+| total_agendamentos | bigint       | NO   |     | 0       |       |
++--------------------+--------------+------+-----+---------+-------+
+
+Tabela: Salas livres (vw_salas_livres)
+
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| id_sala    | int          | NO   |     | 0       |       |
+| nome_sala  | varchar(100) | NO   |     | NULL    |       |
+| tipo       | varchar(50)  | YES  |     | NULL    |       |
+| capacidade | int          | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+
 
 ---
+
+## Povoamento do banco de dados
+Manualmente, ou utilizando o auto complete e ajustando os valores manualmente.
 
 ## 🧪 Normalização
 
@@ -98,3 +167,7 @@ eliminando dependências parciais e redundâncias.
 ### 1️⃣ Subir o banco de dados
 ```bash
 docker compose up -d
+
+frontend http://0.0.0.0:5500
+backend http://0.0.0.0:8000/docs
+
