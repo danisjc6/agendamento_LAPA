@@ -16,6 +16,18 @@ Facilitar o controle de uso das salas do laboratório, permitindo:
 
 ---
 
+## 🧠 Regras de Negócio Implementadas
+
+Não é permitido agendar uma sala em horário já reservado.
+
+Cancelamentos alteram o status para cancelado.
+
+Disponibilidade de salas é calculada dinamicamente.
+
+Blocos de horários são gerados das 08:00 às 18:00.
+
+---
+
 ## 🧱 Arquitetura do Sistema
 
 O projeto segue uma arquitetura em camadas:
@@ -38,15 +50,25 @@ Comunicação via API REST utilizando JSON.
 - **Agendamento**
 - **Reserva**
 
-Relacionamentos com chaves primárias e estrangeiras,
-garantindo integridade referencial.
+
+## 🔗 Relacionamentos
+
+Relacionamentos com chaves primárias e estrangeiras, garantindo integridade referencial.
+Um usuário pode ter vários agendamentos.
+Um agendamento pertence a um usuário.
+Um agendamento gera uma reserva.
+Uma sala pode ter várias reservas.
+Uma reserva liga um agendamento a uma sala.
+
+--- 
 
 📌 O esquema lógico foi obtido a partir da transformação do MERE
 para o modelo relacional.
 
 ---
 
-📖 Dicionário de Dados (Resumo)
+## 📖 Dicionário de Dados
+
 Tabela: Usuario
 | Campo     | Tipo         | Restrições | Descrição                |
 | --------- | ------------ | ---------- | ------------------------ |
@@ -82,7 +104,7 @@ Tabela: Reserva
 | nome_sala (FK)      | varchar(100)| NOT NULL   |Nome da sala                 |
 
 
-VIEWS
+## VIEWS
 
 Tabela: Agendamento Detalhado (vw_agendamento_detalhado)
 +----------------+--------------+------+-----+---------+-------+
@@ -155,6 +177,8 @@ Tabela: Salas livres (vw_salas_livres)
 ## Povoamento do banco de dados
 Manualmente, ou utilizando o auto complete e ajustando os valores manualmente.
 
+---
+
 ## 🧪 Normalização
 
 O esquema está normalizado até **no mínimo a Segunda Forma Normal (2FN)**,
@@ -164,10 +188,16 @@ eliminando dependências parciais e redundâncias.
 
 ## 🐳 Como executar o projeto (Docker)
 
-### 1️⃣ Subir o banco de dados
-```bash
-docker compose up -d
+Clonar o repositório: 
+git clone https://github.com/danisjc6/agendamento_LAPA
+cd agendamento_LAPA
+
+Subir os containers: 
+docker-compose up --build
 
 frontend http://0.0.0.0:5500
 backend http://0.0.0.0:8000/docs
+
+Parar a aplicação: 
+docker-compose down
 

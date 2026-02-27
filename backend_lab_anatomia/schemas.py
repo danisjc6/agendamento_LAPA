@@ -66,17 +66,17 @@ class HorarioDisponibilidade(BaseModel):
 
 class ReservaDetalhada(BaseModel):
     id_agendamento: int
+    usuario_nome: str
+    email: str
+    nome_sala: str
+    tipo: str
+    capacidade: int
     data: date
     hora_inicio: time
     hora_fim: time
     finalidade: str
     status: str
-    nome_sala: str
-    capacidade: int
-    matricula: int
-    nome_usuario: str
-    email_usuario: str
-
+    
 
 class CancelamentoRequest(BaseModel):
     motivo: str | None = None
@@ -95,16 +95,16 @@ class ReservaCreate(BaseModel):
 
 class AgendamentoDetalhado(BaseModel):
     id_agendamento: int
+    usuario_nome: str
+    email: str
+    nome_sala: str
+    tipo: str
+    capacidade: int
     data: date
     hora_inicio: time
     hora_fim: time
     finalidade: str
     status: str
-    nome_sala: str
-    capacidade: int
-    matricula: int
-    nome_usuario: str
-    email_usuario: str
     
 
 # =========================
@@ -112,7 +112,8 @@ class AgendamentoDetalhado(BaseModel):
 # =========================
 
 class OcupacaoSala(BaseModel):
-    sala_nome: str
+    sala: str
+    data_agendamento: date
     total_agendamentos: int
 
 
@@ -123,5 +124,5 @@ class OcupacaoSala(BaseModel):
 
 
 class SalaMaisUtilizada(BaseModel):
-    sala_nome: str
-    total_uso: int
+    nome_sala: str
+    total_reservas: int

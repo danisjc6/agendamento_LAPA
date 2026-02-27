@@ -8,6 +8,23 @@ router = APIRouter(
     tags=["Salas"]
 )
 
+# =========================
+# LISTAR SALAS
+# =========================
+
+@router.get("/")
+def listar_salas():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM salas")
+    salas = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return salas
+
 
 # =========================
 # GERAR BLOCOS DE 1H
