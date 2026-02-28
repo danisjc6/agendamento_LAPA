@@ -26,6 +26,7 @@ CREATE TABLE agendamentos (
     status VARCHAR(20) DEFAULT 'ativo',
     CONSTRAINT fk_usuario
       FOREIGN KEY (matricula) REFERENCES usuarios(matricula)
+
 );
 
 CREATE TABLE reservas (

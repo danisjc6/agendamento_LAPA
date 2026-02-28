@@ -195,7 +195,7 @@ cd agendamento_LAPA
 Subir os containers: 
 docker-compose up --build
 
-frontend http://0.0.0.0:5500
+frontend http://0.0.0.0:3000
 backend http://0.0.0.0:8000/docs
 
 Parar a aplicação: 

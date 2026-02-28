@@ -36,7 +36,6 @@ class SalaCreate(SalaBase):
 
 class AgendamentoBase(BaseModel):
     matricula: int
-    id_sala: int
     data: date
     hora_inicio: time
     hora_fim: time
@@ -46,7 +45,6 @@ class AgendamentoBase(BaseModel):
 
 class AgendamentoCreate(AgendamentoBase):
     matricula: int
-    id_sala: int
     data: date
     hora_inicio: time
     hora_fim: time
