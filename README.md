@@ -4,6 +4,10 @@ Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatom
 
 ---
 
+Grupo: Daniela Oliveira
+
+---
+
 ## 🎯 Objetivo
 
 Facilitar o controle de uso das salas do laboratório, permitindo:
@@ -45,10 +49,10 @@ Comunicação via API REST utilizando JSON.
 
 ### Entidades principais
 
-- **Usuario**
-- **Sala**
-- **Agendamento**
-- **Reserva**
+- Usuario
+- Sala
+- Agendamento
+- Reserva
 
 
 ## 🔗 Relacionamentos
@@ -62,8 +66,17 @@ Uma reserva liga um agendamento a uma sala.
 
 --- 
 
-📌 O esquema lógico foi obtido a partir da transformação do MERE
+📌 Modelo conceitual
+
+https://lucid.app/lucidchart/d1fea927-13ae-4bd2-8b85-e5af8d780775/edit?viewport_loc=-3139%2C-3565%2C2524%2C1340%2C0_0&invitationId=inv_faef2763-0318-4fc4-9ea4-3443acf20d06
+
+O esquema lógico foi obtido a partir da transformação do MERE
 para o modelo relacional.
+
+📌 Modelo Entidade Relacionamento
+
+![alt text](image.png)
+
 
 ---
 
@@ -107,9 +120,9 @@ Tabela: Reserva
 ## VIEWS
 
 Tabela: Agendamento Detalhado (vw_agendamento_detalhado)
-+----------------+--------------+------+-----+---------+-------+
+
 | Field          | Type         | Null | Key | Default | Extra |
-+----------------+--------------+------+-----+---------+-------+
+|----------------|--------------|------|-----|---------|-------|
 | id_agendamento | int          | NO   |     | 0       |       |
 | usuario_nome   | varchar(100) | NO   |     | NULL    |       |
 | email          | varchar(100) | YES  |     | NULL    |       |
@@ -121,12 +134,12 @@ Tabela: Agendamento Detalhado (vw_agendamento_detalhado)
 | hora_fim       | time         | NO   |     | NULL    |       |
 | finalidade     | varchar(255) | YES  |     | NULL    |       |
 | status         | varchar(20)  | YES  |     | ativo   |       |
-+----------------+--------------+------+-----+---------+-------+
+
 
 Tabela: Agendamentos ativos (vw_agendamentos_ativos)
-+----------------+--------------+------+-----+---------+-------+
+
 | Field          | Type         | Null | Key | Default | Extra |
-+----------------+--------------+------+-----+---------+-------+
+|----------------|--------------|------|-----|---------|-------|
 | id_agendamento | int          | NO   |     | 0       |       |
 | usuario_nome   | varchar(100) | NO   |     | NULL    |       |
 | email          | varchar(100) | YES  |     | NULL    |       |
@@ -138,40 +151,41 @@ Tabela: Agendamentos ativos (vw_agendamentos_ativos)
 | hora_fim       | time         | NO   |     | NULL    |       |
 | finalidade     | varchar(255) | YES  |     | NULL    |       |
 | status         | varchar(20)  | YES  |     | ativo   |       |
-+----------------+--------------+------+-----+---------+-------+
+
 
 
 Tabela: Salas mais utilizadas (vw_salas_mais_utilizadas)
 
-+----------------+--------------+------+-----+---------+-------+
+
 | Field          | Type         | Null | Key | Default | Extra |
-+----------------+--------------+------+-----+---------+-------+
+|----------------|--------------|------|-----|---------|-------|
 | nome_sala      | varchar(100) | NO   |     | NULL    |       |
 | total_reservas | bigint       | NO   |     | 0       |       |
-+----------------+--------------+------+-----+---------+-------+
+
 
 Tabela: Ocupação de salas por data(vw_ocupacao_salas_por_data)
 
-+--------------------+--------------+------+-----+---------+-------+
+
 | Field              | Type         | Null | Key | Default | Extra |
-+--------------------+--------------+------+-----+---------+-------+
+|--------------------|--------------|------|-----|---------|-------|
 | sala               | varchar(100) | NO   |     | NULL    |       |
 | data_agendamento   | date         | NO   |     | NULL    |       |
 | total_agendamentos | bigint       | NO   |     | 0       |       |
-+--------------------+--------------+------+-----+---------+-------+
+
 
 Tabela: Salas livres (vw_salas_livres)
 
-+------------+--------------+------+-----+---------+-------+
+
 | Field      | Type         | Null | Key | Default | Extra |
-+------------+--------------+------+-----+---------+-------+
+|------------|--------------|------|-----|---------|-------|
 | id_sala    | int          | NO   |     | 0       |       |
 | nome_sala  | varchar(100) | NO   |     | NULL    |       |
 | tipo       | varchar(50)  | YES  |     | NULL    |       |
 | capacidade | int          | YES  |     | NULL    |       |
-+------------+--------------+------+-----+---------+-------+
 
 
+O relatório foi implementado com base nas informações da view vw_agendamentos_detalhados.
+A tabela Salas Disponíveis foi implementada com base nas informações da view vw_salas_livres.
 ---
 
 🎯 Trigger
@@ -182,9 +196,9 @@ Dessa forma, o sistema garante integridade e consistência dos dados sem depende
 
 🧪 Como testar 
 
-Inserir um agendamento com data passada
-Consultar tabela
-Verificar que status foi automaticamente definido como finalizado
+Inserir um agendamento com data passada.
+Consultar tabela.
+Verificar que status foi automaticamente definido como finalizado.
 
 --- 
 
