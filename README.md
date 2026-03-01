@@ -47,15 +47,18 @@ Comunicação via API REST utilizando JSON.
 
 ## 🗄️ Modelagem do Banco de Dados
 
-### Entidades principais
+--- 
+
+Entidades principais
 
 - Usuario
 - Sala
 - Agendamento
 - Reserva
 
+---
 
-## 🔗 Relacionamentos
+🔗 Relacionamentos
 
 Relacionamentos com chaves primárias e estrangeiras, garantindo integridade referencial.
 Um usuário pode ter vários agendamentos.
@@ -183,9 +186,11 @@ Tabela: Salas livres (vw_salas_livres)
 | tipo       | varchar(50)  | YES  |     | NULL    |       |
 | capacidade | int          | YES  |     | NULL    |       |
 
+--- 
 
-O relatório foi implementado com base nas informações da view vw_agendamentos_detalhados.
+O Relatório foi implementado com base nas informações da view vw_agendamentos_detalhados.
 A tabela Salas Disponíveis foi implementada com base nas informações da view vw_salas_livres.
+
 ---
 
 🎯 Trigger
