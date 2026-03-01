@@ -174,6 +174,20 @@ Tabela: Salas livres (vw_salas_livres)
 
 ---
 
+🎯 Trigger
+
+Foi implementado um gatilho (trigger) no banco MySQL chamado before_insert_agendamento e before_update_agendamento.
+Esse trigger automatiza a regra de negócio que define automaticamente o status do agendamento como "finalizado" quando a data e hora informadas forem anteriores ao momento atual.
+Dessa forma, o sistema garante integridade e consistência dos dados sem depender da camada de aplicação.
+
+🧪 Como testar 
+
+Inserir um agendamento com data passada
+Consultar tabela
+Verificar que status foi automaticamente definido como finalizado
+
+--- 
+
 ## Povoamento do banco de dados
 Manualmente, ou utilizando o auto complete e ajustando os valores manualmente.
 
@@ -195,7 +209,7 @@ cd agendamento_LAPA
 Subir os containers: 
 docker-compose up --build
 
-frontend http://0.0.0.0:3000
+frontend http://localhost:3000
 backend http://0.0.0.0:8000/docs
 
 Parar a aplicação: 

@@ -95,6 +95,8 @@ def criar_agendamento(ag: AgendamentoCreate):
 # =========================
 # LISTAR AGENDAMENTOS
 # =========================
+from datetime import timedelta
+
 @router.get("/", response_model=list[AgendamentoResponse])
 def listar_agendamentos():
 
@@ -103,12 +105,28 @@ def listar_agendamentos():
 
     try:
         cursor.execute("SELECT * FROM agendamentos")
-        return cursor.fetchall()
+        dados = cursor.fetchall()
+
+        for registro in dados:
+            if isinstance(registro["hora_inicio"], timedelta):
+                total_segundos = int(registro["hora_inicio"].total_seconds())
+                horas = total_segundos // 3600
+                minutos = (total_segundos % 3600) // 60
+                segundos = total_segundos % 60
+                registro["hora_inicio"] = f"{horas:02}:{minutos:02}:{segundos:02}"
+
+            if isinstance(registro["hora_fim"], timedelta):
+                total_segundos = int(registro["hora_fim"].total_seconds())
+                horas = total_segundos // 3600
+                minutos = (total_segundos % 3600) // 60
+                segundos = total_segundos % 60
+                registro["hora_fim"] = f"{horas:02}:{minutos:02}:{segundos:02}"
+
+        return dados
 
     finally:
         cursor.close()
         conn.close()
-
 
 # =========================
 # CANCELAR AGENDAMENTO
@@ -154,3 +172,5 @@ def cancelar_agendamento(
     finally:
         cursor.close()
         conn.close()
+
+

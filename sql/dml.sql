@@ -50,15 +50,15 @@ INSERT INTO usuarios VALUES
 (1049, 'Amanda Mondaine', 'amandamondaine@ufape.edu.br', '9999-9989', 'Zootecnia'),
 (1050, 'Lucas Severino Aparecido', 'lucassa@ufape.edu.br', '9999-0010', 'Zootecnia'); 
 
-INSERT INTO salas (id_sala, nome_sala, tipo, capacidade) VALUES
-(1, 'Sala de Aula', 'laboratório', 40),
-(2, 'Sala de Preparo de Peças', 'laboratório', 40),
-(3, 'Auditório LAPA', 'auditório', 60),
-(4, 'Sala de reuniões', 'auditório', 20),
-(5, 'Sala de Necropsia', 'laboratório', 30),
-(6, 'Sala de Microscopia', 'laboratório',10),
-(7, 'Sala de Histopatologia', 'laboratório', 20),
-(8, 'Museu de Ciência Animal', 'laboratório', 15);
+INSERT INTO salas (nome_sala, tipo, capacidade) VALUES
+('Sala de Aula', 'laboratório', 40),
+('Sala de Preparo de Peças', 'laboratório', 40),
+('Auditório LAPA', 'auditório', 60),
+('Sala de reuniões', 'auditório', 20),
+('Sala de Necropsia', 'laboratório', 30),
+('Sala de Microscopia', 'laboratório',10),
+('Sala de Histopatologia', 'laboratório', 20),
+('Museu de Ciência Animal', 'laboratório', 15);
 
 INSERT INTO agendamentos (matricula, data, hora_inicio, hora_fim, finalidade, status)
 VALUES

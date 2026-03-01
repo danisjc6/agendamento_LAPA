@@ -7,6 +7,8 @@ def get_db():
         port=3306,
         user="lab_user",
         password="lab_pass",
-        database="laboratorio_anatomia"
+        database="laboratorio_anatomia",
+        charset="utf8mb4",
+        collation="utf8mb4_unicode_ci"
     )
 

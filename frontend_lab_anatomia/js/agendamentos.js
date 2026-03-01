@@ -50,7 +50,7 @@ document.getElementById("formAgendamento").onsubmit = async (e) => {
 };
 
 async function listarAgendamentos() {
-    const lista = await apiFetch("/agendamentos");
+    const lista = await apiFetch("/agendamentos/");
 
     const tbody = document.querySelector("#tabelaAgendamentos tbody");
     tbody.innerHTML = "";

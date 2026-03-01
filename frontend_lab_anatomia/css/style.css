@@ -57,3 +57,17 @@ td, th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
+
+.btn-exportar {
+  background-color: #2e7d32;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.btn-exportar:hover {
+  background-color: #1b5e20;
+}

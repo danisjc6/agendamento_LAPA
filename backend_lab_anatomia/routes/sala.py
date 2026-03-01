@@ -1,7 +1,8 @@
 from datetime import date, datetime, time, timedelta
 from fastapi import APIRouter, Query
 from database import get_db
-from schemas import HorarioDisponibilidade
+from schemas import HorarioDisponibilidade, SalaBase, SalaResponse, SalaCreate
+from datetime import timedelta, datetime, time
 
 router = APIRouter(
     prefix="/salas",
@@ -44,9 +45,7 @@ def gerar_blocos():
     return blocos
 
 
-# =========================
-# VERIFICAR DISPONIBILIDADE
-# =========================
+
 @router.get(
     "/{id_sala}/disponibilidade",
     response_model=list[HorarioDisponibilidade]
@@ -76,17 +75,29 @@ def verificar_disponibilidade(
     cursor.close()
     conn.close()
 
+    # 🔧 Função auxiliar (agora dentro da rota corretamente)
+    def converter_para_time(valor):
+        if isinstance(valor, timedelta):
+            total_segundos = int(valor.total_seconds())
+            horas = total_segundos // 3600
+            minutos = (total_segundos % 3600) // 60
+            segundos = total_segundos % 60
+            return time(horas, minutos, segundos)
+        return valor
+
     # 🔴 Identificar horários ocupados
     ocupados = set()
 
-    for r in reservas:
-        atual = r["hora_inicio"]
+    for inicio_bloco, fim_bloco in blocos:
+        for r in reservas:
+            inicio_reserva = converter_para_time(r["hora_inicio"])
+            fim_reserva = converter_para_time(r["hora_fim"])
 
-        while atual < r["hora_fim"]:
-            ocupados.add(atual)
-            atual = (
-                datetime.combine(date.today(), atual) + timedelta(hours=1)
-            ).time()
+            # verifica se há sobreposição
+            if inicio_bloco < fim_reserva and fim_bloco > inicio_reserva:
+                ocupados.add(inicio_bloco)
+                break
+
 
     # 🟢 Gerar lista de disponíveis
     disponiveis = []
