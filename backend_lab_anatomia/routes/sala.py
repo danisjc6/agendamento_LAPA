@@ -75,7 +75,7 @@ def verificar_disponibilidade(
     cursor.close()
     conn.close()
 
-    # 🔧 Função auxiliar (agora dentro da rota corretamente)
+    # 🔧 Função auxiliar 
     def converter_para_time(valor):
         if isinstance(valor, timedelta):
             total_segundos = int(valor.total_seconds())
