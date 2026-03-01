@@ -75,8 +75,19 @@ async function listarAgendamentos() {
 }
 
 async function cancelarAgendamento(id_agendamento) {
+
+    if (!confirm("Deseja realmente cancelar este agendamento?")) {
+        return;
+    }
+
     await apiFetch(`/agendamentos/${id_agendamento}/cancelar`, {
-        method: "POST"
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            motivo: "Cancelado pelo usuário"
+        })
     });
 
     listarAgendamentos();
