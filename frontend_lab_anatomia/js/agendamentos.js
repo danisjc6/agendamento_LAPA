@@ -25,7 +25,7 @@ document.getElementById("formAgendamento").onsubmit = async (e) => {
 
     const data = document.getElementById("dataSelecionada").value;
 
-    const agendamento = await apiFetch("/agendamentos", {
+    const agendamento = await apiFetch("/agendamentos/", {
         method: "POST",
         body: JSON.stringify({
             matricula: document.getElementById("matricula").value,

@@ -22,13 +22,13 @@ Facilitar o controle de uso das salas do laboratório, permitindo:
 
 ## 🧠 Regras de Negócio Implementadas
 
-Não é permitido agendar uma sala em horário já reservado.
+Não permite sobreposição de horários na mesma sala
 
-Cancelamentos alteram o status para cancelado.
+Agendamentos no passado são automaticamente marcados como finalizado
 
-Disponibilidade de salas é calculada dinamicamente.
+Cancelamento altera status para cancelado
 
-Blocos de horários são gerados das 08:00 às 18:00.
+Status é controlado exclusivamente pelo backend
 
 ---
 
@@ -195,15 +195,9 @@ A tabela Salas Disponíveis foi implementada com base nas informações da view 
 
 🎯 Trigger
 
-Foi implementado um gatilho (trigger) no banco MySQL chamado before_insert_agendamento e before_update_agendamento.
-Esse trigger automatiza a regra de negócio que define automaticamente o status do agendamento como "finalizado" quando a data e hora informadas forem anteriores ao momento atual.
-Dessa forma, o sistema garante integridade e consistência dos dados sem depender da camada de aplicação.
-
-🧪 Como testar 
-
-Inserir um agendamento com data passada.
-Consultar tabela.
-Verificar que status foi automaticamente definido como finalizado.
+Foi implementado um gatilho (trigger) no banco MySQL chamado trigger_agendamento_passado.
+Esse trigger impede automaticamente o agendamento quando a data e hora informadas forem anteriores ao momento atual. 
+A integridade das regras de negócio foi garantida no banco de dados, enquanto a camada de serviço trata as exceções e fornece mensagens amigáveis ao usuário. 
 
 --- 
 

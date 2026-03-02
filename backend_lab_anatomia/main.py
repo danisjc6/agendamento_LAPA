@@ -21,6 +21,7 @@ app = FastAPI(
 # =========================
 origins = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 app.add_middleware(
@@ -97,3 +98,4 @@ def relatorio_csv(db = Depends(get_db)):
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=relatorio_agendamentos.csv"}
     )
+

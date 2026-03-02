@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date, time
-
+from enum import Enum
 
 
 class UsuarioBase(BaseModel):
@@ -40,22 +40,14 @@ class AgendamentoBase(BaseModel):
     hora_inicio: time
     hora_fim: time
     finalidade: Optional[str] = None
-    status: Optional[str] = "ativo"
-
-
+    
 class AgendamentoCreate(AgendamentoBase):
-    matricula: int
     id_sala: int
-    data: date
-    hora_inicio: time
-    hora_fim: time
-    finalidade: str
-    status: str = "ativo"
-
+    
 
 class AgendamentoResponse(AgendamentoBase):
     id_agendamento: int
-
+    status: str
 
 class HorarioDisponibilidade(BaseModel):
     data: date
@@ -105,6 +97,14 @@ class AgendamentoDetalhado(BaseModel):
     finalidade: str
     status: str
     
+
+
+class StatusAgendamento(str, Enum):
+    ativo = "ativo"
+    cancelado = "cancelado"
+    finalizado = "finalizado"
+
+status: StatusAgendamento
 
 # =========================
 # OCUPAÇÃO SALAS

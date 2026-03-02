@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from database import get_db
 from schemas import AgendamentoCreate, AgendamentoResponse, CancelamentoRequest
+import mysql.connector
+from datetime import timedelta
 
 router = APIRouter(
     prefix="/agendamentos",
@@ -44,23 +46,22 @@ def criar_agendamento(ag: AgendamentoCreate):
                 detail="Sala já reservada nesse horário"
             )
 
-        # 1️⃣ Inserir agendamento
+        # ✅ Inserir agendamento
         cursor.execute("""
             INSERT INTO agendamentos
-            (matricula, data, hora_inicio, hora_fim, finalidade, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            (matricula, data, hora_inicio, hora_fim, finalidade)
+            VALUES (%s, %s, %s, %s, %s)
         """, (
             ag.matricula,
             ag.data,
             ag.hora_inicio,
             ag.hora_fim,
             ag.finalidade,
-            ag.status
         ))
 
         id_agendamento = cursor.lastrowid
 
-        # 2️⃣ Inserir reserva
+        # ✅ Inserir reserva
         cursor.execute("""
             INSERT INTO reservas (id_agendamento, id_sala)
             VALUES (%s, %s)
@@ -71,27 +72,58 @@ def criar_agendamento(ag: AgendamentoCreate):
 
         conn.commit()
 
-        # 3️⃣ Retornar criado
-        cursor.execute(
-            "SELECT * FROM agendamentos WHERE id_agendamento = %s",
-            (id_agendamento,)
-        )
+        # ✅ Buscar registro completo
+        cursor.execute("""
+            SELECT 
+                id_agendamento,
+                matricula,
+                data,
+                hora_inicio,
+                hora_fim,
+                finalidade,
+                status
+            FROM agendamentos
+            WHERE id_agendamento = %s
+        """, (id_agendamento,))
 
-        return cursor.fetchone()
+        registro = cursor.fetchone()
+
+        # 🔄 Converter timedelta se necessário
+        from datetime import timedelta
+
+        if isinstance(registro["hora_inicio"], timedelta):
+            total = int(registro["hora_inicio"].total_seconds())
+            h = total // 3600
+            m = (total % 3600) // 60
+            s = total % 60
+            registro["hora_inicio"] = f"{h:02}:{m:02}:{s:02}"
+
+        if isinstance(registro["hora_fim"], timedelta):
+            total = int(registro["hora_fim"].total_seconds())
+            h = total // 3600
+            m = (total % 3600) // 60
+            s = total % 60
+            registro["hora_fim"] = f"{h:02}:{m:02}:{s:02}"
+
+        return registro
 
     except HTTPException:
         conn.rollback()
         raise
 
-    except Exception as e:
+    except mysql.connector.Error as err:
         conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+
+        if err.sqlstate == '45000':
+            raise HTTPException(status_code=400, detail=err.msg)
+
+        raise HTTPException(status_code=500, detail="Erro no banco de dados.")
 
     finally:
         cursor.close()
         conn.close()
 
-
+        
 # =========================
 # LISTAR AGENDAMENTOS
 # =========================
@@ -104,6 +136,16 @@ def listar_agendamentos():
     cursor = conn.cursor(dictionary=True)
 
     try:
+        # 🔄 Atualiza automaticamente os que já passaram
+        cursor.execute("""
+            UPDATE agendamentos
+            SET status = 'finalizado'
+            WHERE TIMESTAMP(data, hora_inicio) < NOW()
+            AND status = 'ativo'
+        """)
+        conn.commit()
+
+        # 📋 Buscar agendamentos
         cursor.execute("SELECT * FROM agendamentos")
         dados = cursor.fetchall()
 
@@ -174,3 +216,5 @@ def cancelar_agendamento(
         conn.close()
 
 
+
+    
