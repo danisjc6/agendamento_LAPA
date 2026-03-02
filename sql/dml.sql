@@ -165,3 +165,4 @@ INSERT INTO reservas (id_reserva, id_agendamento, id_sala) VALUES
 (48, 48, 4),
 (49, 49, 2),
 (50, 50, 3);
+

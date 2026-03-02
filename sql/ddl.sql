@@ -101,3 +101,4 @@ WHERE s.id_sala NOT IN (
     JOIN agendamentos a ON r.id_agendamento = a.id_agendamento
     WHERE a.data = CURRENT_DATE()
 );
+
