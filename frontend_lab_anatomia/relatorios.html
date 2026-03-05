@@ -3,32 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Relatórios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    select, button {
+      padding: 8px 10px;
+      border: 1px solid #c7d2e3;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button {
+      cursor: pointer;
+      background: #1f4fbf;
+      color: #fff;
+      border: none;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(18, 31, 54, 0.08);
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #e7edf7;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #eef3fc;
+    }
+
+    #status {
+      margin: 8px 0 12px;
+      color: #4d5d7a;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
 
 <h2>Relatórios</h2>
 
-<button onclick="exportarCSV()" class="btn-exportar">
-  ⬇ Exportar CSV
-</button>
+<div class="controls">
+  <label for="viewSelector">View:</label>
+  <select id="viewSelector"></select>
+  <button id="btnAtualizar" type="button">Atualizar</button>
+  <button id="btnExportar" type="button">Exportar CSV</button>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Data</th>
-      <th>Início</th>
-      <th>Fim</th>
-      <th>Sala</th>
-      <th>Usuário</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="tabela-relatorios"></tbody>
-</table>
+<div id="status"></div>
 
+<div class="card">
+  <table>
+    <thead id="cabecalho-relatorios"></thead>
+    <tbody id="tabela-relatorios"></tbody>
+  </table>
+</div>
+
+<script src="js/api.js"></script>
 <script src="js/relatorios.js"></script>
 
 </body>
 </html>
-
