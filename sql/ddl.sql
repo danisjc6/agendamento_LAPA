@@ -102,3 +102,6 @@ WHERE s.id_sala NOT IN (
     WHERE a.data = CURRENT_DATE()
 );
 
+
+
+
