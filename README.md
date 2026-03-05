@@ -1,230 +1,261 @@
-# Sistema de Agendamento – Laboratório de Anatomia (LAPA)
+# Sistema de Agendamento - Laboratorio de Anatomia (LAPA)
 
-Sistema web para gerenciamento de salas e agendamentos do Laboratório de Anatomia, desenvolvido como atividade acadêmica.
+Sistema web para gerenciamento de salas, agendamentos e relatorios do Laboratorio de Anatomia.
 
----
+## Integrantes do grupo
 
-Grupo: Daniela Oliveira
+- Daniela Oliveira
 
----
+## Objetivo
 
-## 🎯 Objetivo
+Centralizar o uso das salas do laboratorio com:
 
-Facilitar o controle de uso das salas do laboratório, permitindo:
+- cadastro de usuarios
+- cadastro de salas
+- criacao e cancelamento de agendamentos
+- reserva automatica vinculada ao agendamento
+- consulta de disponibilidade
+- relatorios baseados em views SQL
 
-- Cadastro de usuários
-- Cadastro de salas
-- Criação de agendamentos
-- Registro de reservas
-- Consulta de disponibilidade
+## Stack
 
----
+- Frontend: HTML, CSS e JavaScript (sem framework)
+- Backend: FastAPI (Python 3.11)
+- Banco: MySQL 8
+- Orquestracao: Docker Compose
 
-## 🧠 Regras de Negócio Implementadas
+## Portas da aplicacao
 
-Não permite sobreposição de horários na mesma sala
+- Frontend: `3000` (Nginx no container, acesso em `http://localhost:3000`)
+- Backend API: `8000` (acesso em `http://localhost:8000`)
+- Swagger: `http://localhost:8000/docs`
+- MySQL: `3307` no host mapeado para `3306` no container
 
-Agendamentos no passado são automaticamente marcados como finalizado
+## Arquitetura do projeto
 
-Cancelamento altera status para cancelado
+- `frontend_lab_anatomia`: interface web (`index.html` e `relatorios.html`)
+- `backend_lab_anatomia`: API REST e regras de negocio
+- `sql`: scripts de DDL, DML e trigger
 
-Status é controlado exclusivamente pelo backend
+## Como rodar o projeto (Docker)
 
----
+### Requisitos
 
-## 🧱 Arquitetura do Sistema
+- Docker
+- Docker-compose
 
-O projeto segue uma arquitetura em camadas:
+### Passo a passo
 
-- **Frontend:** HTML, CSS e JavaScript puro
-- **Backend:** Python (FastAPI)
-- **Banco de Dados:** MySQL 8
-- **Containerização:** Docker e Docker-Compose
+```bash
+git clone https://github.com/danisjc6/agendamento_LAPA
+cd agendamento_LAPA
+docker compose up --build
+```
 
-Comunicação via API REST utilizando JSON.
+### Subir em background
 
----
+```bash
+docker compose up -d --build
+```
 
-## 🗄️ Modelagem do Banco de Dados
+### Parar os containers
 
---- 
+```bash
+docker compose down
+```
 
-Entidades principais
+### Rebuild apos alteracoes de codigo
+
+Como as imagens fazem `COPY` do codigo, para refletir alteracoes:
+
+```bash
+docker compose up -d --build frontend backend
+```
+
+## Funcionalidades implementadas
+
+### Agendamentos
+
+- cria agendamento e reserva em uma unica operacao (`POST /agendamentos/`)
+- bloqueia sobreposicao de horarios na mesma sala
+- permite cancelamento (`PUT /agendamentos/{id_agendamento}/cancelar`)
+- atualiza status para `finalizado` quando horario ja passou (na listagem)
+- tela inicial com atualizacao automatica da lista de agendamentos
+
+### Disponibilidade de salas
+
+- endpoint de disponibilidade por sala/data:
+  `GET /salas/{id_sala}/disponibilidade?data=YYYY-MM-DD`
+- retorno atual: blocos livres de 1h entre 08:00 e 18:00
+
+### Relatorios com views
+
+Na pagina `relatorios.html`, o frontend consome dinamicamente:
+
+- `vw_agendamentos_detalhados`
+- `vw_salas_mais_utilizadas`
+- `vw_agendamentos_ativos`
+- `vw_ocupacao_salas_por_data`
+- `vw_salas_livres`
+
+Com exportacao CSV por view selecionada.
+
+## Endpoints principais
+
+### Usuarios (`/usuarios`)
+
+- `POST /usuarios/`
+- `GET /usuarios/`
+- `GET /usuarios/{matricula}`
+- `PUT /usuarios/{matricula}`
+- `DELETE /usuarios/{matricula}`
+
+### Salas (`/salas`)
+
+- `GET /salas/`
+- `GET /salas/{id_sala}/disponibilidade?data=YYYY-MM-DD`
+
+### Agendamentos (`/agendamentos`)
+
+- `POST /agendamentos/`
+- `GET /agendamentos/`
+- `PUT /agendamentos/{id_agendamento}/cancelar`
+
+### Reservas (`/reservas`)
+
+- `GET /reservas/`
+- `POST /reservas/`
+
+### Relatorios (`/relatorios`)
+
+- `GET /relatorios/views`
+- `GET /relatorios/views/{view_nome}`
+- `GET /relatorios/views/{view_nome}/csv`
+
+Endpoints legados mantidos:
+
+- `GET /relatorios/agendamentos`
+- `GET /relatorios/agendamentos/csv`
+
+## Esquema conceitual do BD (atualizado)
+
+- Modelo conceitual (Lucidchart):
+  `https://lucid.app/lucidchart/d1fea927-13ae-4bd2-8b85-e5af8d780775/edit?viewport_loc=-3139%2C-3565%2C2524%2C1340%2C0_0&invitationId=inv_faef2763-0318-4fc4-9ea4-3443acf20d06`
+- Diagrama ER no repositorio: `image.png`
+
+Entidades principais:
 
 - Usuario
 - Sala
 - Agendamento
 - Reserva
 
----
+Relacionamentos:
 
-🔗 Relacionamentos
+- um usuario pode ter varios agendamentos
+- um agendamento pertence a um usuario
+- um agendamento gera uma reserva
+- uma sala pode ter varias reservas
 
-Relacionamentos com chaves primárias e estrangeiras, garantindo integridade referencial.
-Um usuário pode ter vários agendamentos.
-Um agendamento pertence a um usuário.
-Um agendamento gera uma reserva.
-Uma sala pode ter várias reservas.
-Uma reserva liga um agendamento a uma sala.
+## Dicionario de dados
 
---- 
+### Tabela `usuarios`
 
-📌 Modelo conceitual
-
-https://lucid.app/lucidchart/d1fea927-13ae-4bd2-8b85-e5af8d780775/edit?viewport_loc=-3139%2C-3565%2C2524%2C1340%2C0_0&invitationId=inv_faef2763-0318-4fc4-9ea4-3443acf20d06
-
-O esquema lógico foi obtido a partir da transformação do MERE
-para o modelo relacional.
-
-📌 Modelo Entidade Relacionamento
-
-![alt text](image.png)
-
-
----
-
-## 📖 Dicionário de Dados
-
-Tabela: Usuario
-| Campo     | Tipo         | Restrições | Descrição                |
-| --------- | ------------ | ---------- | ------------------------ |
-| matricula | INT          | PK         | Identificador do usuário |
-| nome      | VARCHAR(100) | NOT NULL   | Nome do usuário          |
-| email     | VARCHAR(100) |            | Email                    |
+| Campo     | Tipo         | Restricoes | Descricao                |
+|-----------|--------------|------------|--------------------------|
+| matricula | INT          | PK         | Identificador do usuario |
+| nome      | VARCHAR(100) | NOT NULL   | Nome do usuario          |
+| email     | VARCHAR(100) | UNIQUE     | Email                    |
 | telefone  | VARCHAR(20)  |            | Contato                  |
-| curso     | VARCHAR(100) |            | Curso do usuário         |
+| curso     | VARCHAR(100) |            | Curso do usuario         |
 
-Tabela: Sala
-| Campo      | Tipo         | Restrições | Descrição             |
-| ---------- | ------------ | ---------- | --------------------- |
-| id_sala    | INT          | PK         | Identificador da sala |
+### Tabela `salas`
+
+| Campo      | Tipo         | Restricoes | Descricao             |
+|------------|--------------|------------|-----------------------|
+| id_sala    | INT          | PK, AI     | Identificador da sala |
 | nome_sala  | VARCHAR(100) | NOT NULL   | Nome da sala          |
 | tipo       | VARCHAR(50)  |            | Tipo da sala          |
-| capacidade | INT          |            | Capacidade máxima     |
+| capacidade | INT          | CHECK > 0  | Capacidade maxima     |
 
-Tabela: Agendamento
-| Campo          | Tipo         | Restrições | Descrição                   |
-| ----------     | ------------ | ---------- | ----------------------------|
-| id_agendamento | INT          | PK         | Identificador do agendamento|
-| matricula (FK) | INT          | NOT NULL   | matricula do usuário        |
-| data           | date         |            | Data do agendamento         |
-| hora_inicio    | time         |            | horário do início do agendam|
-| hora_fim       | time         |            | horário do fim do agendam.  |
-| finalidade     | varchar(100) |            | Aula, palestra, evento, etc |
-| status         | varchar(100) |            | ativo, cancelado            |
+### Tabela `agendamentos`
 
-Tabela: Reserva
-| Campo               | Tipo        | Restrições | Descrição                   |
-| -------------       | ------------| ---------- | ----------------------------|
-| id_agendamento (FK) | INT         | PK         | Identificador do agendamento|
-| nome_sala (FK)      | varchar(100)| NOT NULL   |Nome da sala                 |
+| Campo          | Tipo         | Restricoes                    | Descricao                    |
+|----------------|--------------|-------------------------------|------------------------------|
+| id_agendamento | INT          | PK, AI                        | Identificador do agendamento |
+| matricula      | INT          | FK -> usuarios.matricula      | Usuario que agendou          |
+| data           | DATE         | NOT NULL                      | Data do agendamento          |
+| hora_inicio    | TIME         | NOT NULL                      | Horario de inicio            |
+| hora_fim       | TIME         | NOT NULL                      | Horario de fim               |
+| finalidade     | VARCHAR(255) |                               | Finalidade                   |
+| status         | VARCHAR(20)  | DEFAULT 'ativo'               | ativo/cancelado/finalizado   |
 
+### Tabela `reservas`
 
-## VIEWS
+| Campo          | Tipo | Restricoes                         | Descricao                         |
+|----------------|------|------------------------------------|-----------------------------------|
+| id_reserva     | INT  | PK, AI                             | Identificador da reserva          |
+| id_agendamento | INT  | FK -> agendamentos.id_agendamento  | Agendamento associado             |
+| id_sala        | INT  | FK -> salas.id_sala                | Sala reservada                    |
+| (id_ag,id_sala)|      | UNIQUE                             | Impede duplicidade da mesma dupla |
 
-Tabela: Agendamento Detalhado (vw_agendamento_detalhado)
+### Views SQL
 
-| Field          | Type         | Null | Key | Default | Extra |
-|----------------|--------------|------|-----|---------|-------|
-| id_agendamento | int          | NO   |     | 0       |       |
-| usuario_nome   | varchar(100) | NO   |     | NULL    |       |
-| email          | varchar(100) | YES  |     | NULL    |       |
-| nome_sala      | varchar(100) | NO   |     | NULL    |       |
-| tipo           | varchar(50)  | YES  |     | NULL    |       |
-| capacidade     | int          | YES  |     | NULL    |       |
-| data           | date         | NO   |     | NULL    |       |
-| hora_inicio    | time         | NO   |     | NULL    |       |
-| hora_fim       | time         | NO   |     | NULL    |       |
-| finalidade     | varchar(255) | YES  |     | NULL    |       |
-| status         | varchar(20)  | YES  |     | ativo   |       |
+- `vw_agendamentos_detalhados`
+- `vw_salas_mais_utilizadas`
+- `vw_agendamentos_ativos`
+- `vw_ocupacao_salas_por_data`
+- `vw_salas_livres`
 
+Script de criacao: `sql/ddl.sql`
 
-Tabela: Agendamentos ativos (vw_agendamentos_ativos)
+## Documentacao do trigger
 
-| Field          | Type         | Null | Key | Default | Extra |
-|----------------|--------------|------|-----|---------|-------|
-| id_agendamento | int          | NO   |     | 0       |       |
-| usuario_nome   | varchar(100) | NO   |     | NULL    |       |
-| email          | varchar(100) | YES  |     | NULL    |       |
-| nome_sala      | varchar(100) | NO   |     | NULL    |       |
-| tipo           | varchar(50)  | YES  |     | NULL    |       |
-| capacidade     | int          | YES  |     | NULL    |       |
-| data           | date         | NO   |     | NULL    |       |
-| hora_inicio    | time         | NO   |     | NULL    |       |
-| hora_fim       | time         | NO   |     | NULL    |       |
-| finalidade     | varchar(255) | YES  |     | NULL    |       |
-| status         | varchar(20)  | YES  |     | ativo   |       |
+- Arquivo: `sql/triggers/trigger_agendamento_passado.sql`
+- Nome: `validar_agendamento_passado`
+- Tipo: `BEFORE INSERT ON agendamentos`
 
+### Regra de negocio automatizada
 
+O trigger impede que seja criado:
 
-Tabela: Salas mais utilizadas (vw_salas_mais_utilizadas)
+- agendamento com `data` anterior a data atual
+- agendamento para hoje com `hora_inicio` anterior ao horario atual
 
+Quando a regra e violada, o banco retorna erro com `SQLSTATE '45000'`.
 
-| Field          | Type         | Null | Key | Default | Extra |
-|----------------|--------------|------|-----|---------|-------|
-| nome_sala      | varchar(100) | NO   |     | NULL    |       |
-| total_reservas | bigint       | NO   |     | 0       |       |
+### Como testar o trigger
 
+1. Suba o projeto com Docker.
+2. Acesse o MySQL no container:
 
-Tabela: Ocupação de salas por data(vw_ocupacao_salas_por_data)
+```bash
+docker compose exec mysql mysql -u root -proot laboratorio_anatomia
+```
 
+3. Tente inserir um agendamento em data passada:
 
-| Field              | Type         | Null | Key | Default | Extra |
-|--------------------|--------------|------|-----|---------|-------|
-| sala               | varchar(100) | NO   |     | NULL    |       |
-| data_agendamento   | date         | NO   |     | NULL    |       |
-| total_agendamentos | bigint       | NO   |     | 0       |       |
+```sql
+INSERT INTO agendamentos (matricula, data, hora_inicio, hora_fim, finalidade, status)
+VALUES (1001, '2020-01-01', '08:00:00', '09:00:00', 'Teste trigger', 'ativo');
+```
 
+4. Resultado esperado: erro com mensagem de bloqueio de data passada.
 
-Tabela: Salas livres (vw_salas_livres)
+## Como os dados do banco foram povoados
 
+- Estrutura: `sql/ddl.sql` (tabelas e views)
+- Dados iniciais: `sql/dml.sql` (usuarios, salas, agendamentos e reservas)
+- Trigger: `sql/triggers/trigger_agendamento_passado.sql`
 
-| Field      | Type         | Null | Key | Default | Extra |
-|------------|--------------|------|-----|---------|-------|
-| id_sala    | int          | NO   |     | 0       |       |
-| nome_sala  | varchar(100) | NO   |     | NULL    |       |
-| tipo       | varchar(50)  | YES  |     | NULL    |       |
-| capacidade | int          | YES  |     | NULL    |       |
+No `docker-compose.yml`, a pasta `./sql` e montada em `/docker-entrypoint-initdb.d`, entao a inicializacao do MySQL executa os scripts automaticamente no primeiro start do volume.
 
---- 
+## Correcoes realizadas nesta versao (vs. versao passada)
 
-O Relatório foi implementado com base nas informações da view vw_agendamentos_detalhados.
-A tabela Salas Disponíveis foi implementada com base nas informações da view vw_salas_livres.
-
----
-
-🎯 Trigger
-
-Foi implementado um gatilho (trigger) no banco MySQL chamado trigger_agendamento_passado.
-Esse trigger impede automaticamente o agendamento quando a data e hora informadas forem anteriores ao momento atual. 
-A integridade das regras de negócio foi garantida no banco de dados, enquanto a camada de serviço trata as exceções e fornece mensagens amigáveis ao usuário. 
-
---- 
-
-## Povoamento do banco de dados
-Manualmente, ou utilizando o auto complete e ajustando os valores manualmente.
-
----
-
-## 🧪 Normalização
-
-O esquema está normalizado até **no mínimo a Segunda Forma Normal (2FN)**,
-eliminando dependências parciais e redundâncias.
-
----
-
-## 🐳 Como executar o projeto (Docker)
-
-Clonar o repositório: 
-git clone https://github.com/danisjc6/agendamento_LAPA
-cd agendamento_LAPA
-
-Subir os containers: 
-docker-compose up --build
-
-frontend http://localhost:3000
-backend http://0.0.0.0:8000/docs
-
-Parar a aplicação: 
-docker-compose down
-
+- corrigido erro no frontend ao criar agendamento (`a is not defined`)
+- removida duplicidade de criacao de reserva no frontend (backend ja cria reserva junto com agendamento)
+- corrigido erro de disponibilidade quando tabela de horarios nao existe no DOM
+- ajustada interpretacao de disponibilidade no frontend (endpoint retorna blocos livres)
+- adicionado refresh automatico de agendamentos na tela principal
+- relatorio ordenado por data mais recente para mais antiga
+- frontend de relatorios atualizado para consumir as views SQL dinamicamente
