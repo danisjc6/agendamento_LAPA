@@ -61,7 +61,11 @@ def root():
 def relatorio_agendamentos(db = Depends(get_db)):
     cursor = db.cursor()
 
-    cursor.execute("SELECT * FROM vw_agendamentos_detalhados;")
+    cursor.execute("""
+        SELECT *
+        FROM vw_agendamentos_detalhados
+        ORDER BY data DESC, hora_inicio DESC, id_agendamento DESC
+    """)
 
     colunas = [desc[0] for desc in cursor.description]
     dados = cursor.fetchall()
@@ -78,7 +82,11 @@ def relatorio_agendamentos(db = Depends(get_db)):
 @app.get("/relatorios/agendamentos/csv")
 def relatorio_csv(db = Depends(get_db)):
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM vw_agendamentos_detalhados;")
+    cursor.execute("""
+        SELECT *
+        FROM vw_agendamentos_detalhados
+        ORDER BY data DESC, hora_inicio DESC, id_agendamento DESC
+    """)
 
     colunas = [desc[0] for desc in cursor.description]
     dados = cursor.fetchall()
@@ -98,4 +106,3 @@ def relatorio_csv(db = Depends(get_db)):
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=relatorio_agendamentos.csv"}
     )
-

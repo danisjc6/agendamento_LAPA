@@ -17,7 +17,10 @@ async function carregarSalas() {
 
         tr.onclick = () => {
             salaSelecionada = sala;
-            carregarDisponibilidade();
+            const tabelaHorarios = document.querySelector("#tabelaHorarios tbody");
+            if (tabelaHorarios) {
+                carregarDisponibilidade();
+            }
         };
 
         tbody.appendChild(tr);

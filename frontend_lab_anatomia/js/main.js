@@ -5,6 +5,7 @@ window.addEventListener("DOMContentLoaded", () => {
         case "agendamentos":
             carregarSalas();
             listarAgendamentos();
+            iniciarAtualizacaoAutomaticaAgendamentos();
             break;
 
         case "usuarios":
@@ -12,5 +13,4 @@ window.addEventListener("DOMContentLoaded", () => {
             break;
     }
 });
-
 
