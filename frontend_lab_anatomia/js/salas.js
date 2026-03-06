@@ -1,4 +1,5 @@
 let salaSelecionada = null;
+let linhaSalaSelecionada = null;
 
 async function carregarSalas() {
     const salas = await apiFetch("/salas");
@@ -17,6 +18,14 @@ async function carregarSalas() {
 
         tr.onclick = () => {
             salaSelecionada = sala;
+
+            if (linhaSalaSelecionada) {
+                linhaSalaSelecionada.classList.remove("sala-selecionada");
+            }
+
+            tr.classList.add("sala-selecionada");
+            linhaSalaSelecionada = tr;
+
             const tabelaHorarios = document.querySelector("#tabelaHorarios tbody");
             if (tabelaHorarios) {
                 carregarDisponibilidade();

@@ -14,8 +14,25 @@ function formatarValor(chave, valor) {
     if (partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
 
-  if ((chave === "hora_inicio" || chave === "hora_fim") && typeof valor === "string") {
-    return valor.slice(0, 5);
+  if (chave === "hora_inicio" || chave === "hora_fim") {
+    if (typeof valor === "string") {
+      // Ex.: "14:30:00" -> "14:30"
+      if (valor.includes(":")) return valor.slice(0, 5);
+
+      // Ex.: "52200" (segundos) -> "14:30"
+      const totalSegundos = Number(valor);
+      if (!Number.isNaN(totalSegundos)) {
+        const horas = Math.floor(totalSegundos / 3600);
+        const minutos = Math.floor((totalSegundos % 3600) / 60);
+        return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
+      }
+    }
+
+    if (typeof valor === "number") {
+      const horas = Math.floor(valor / 3600);
+      const minutos = Math.floor((valor % 3600) / 60);
+      return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
+    }
   }
 
   return String(valor);

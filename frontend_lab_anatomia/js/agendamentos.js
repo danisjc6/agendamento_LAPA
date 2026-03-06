@@ -85,11 +85,12 @@ document.getElementById("formAgendamento").onsubmit = async (e) => {
 async function listarAgendamentos() {
     const lista = await apiFetch("/agendamentos/");
     const listaOrdenada = [...lista].sort((a, b) => b.id_agendamento - a.id_agendamento);
+    const primeirosDez = listaOrdenada.slice(0, 10);
 
     const tbody = document.querySelector("#tabelaAgendamentos tbody");
     tbody.innerHTML = "";
 
-    listaOrdenada.forEach(a => {
+    primeirosDez.forEach(a => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${a.id_agendamento}</td>
