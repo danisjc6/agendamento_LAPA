@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from database import get_db
 from schemas import AgendamentoCreate, AgendamentoResponse, CancelamentoRequest
 import mysql.connector
-from datetime import timedelta
+from datetime import timedelta, time
 
 router = APIRouter(
     prefix="/agendamentos",
@@ -20,6 +20,21 @@ def criar_agendamento(ag: AgendamentoCreate):
     cursor = conn.cursor(dictionary=True)
 
     try:
+        hora_minima = time(8, 0)
+        hora_maxima = time(18, 0)
+
+        if ag.hora_inicio < hora_minima or ag.hora_inicio > hora_maxima:
+            raise HTTPException(
+                status_code=400,
+                detail="Hora de início deve estar entre 08:00 e 18:00"
+            )
+
+        if ag.hora_fim < hora_minima or ag.hora_fim > hora_maxima:
+            raise HTTPException(
+                status_code=400,
+                detail="Hora de fim deve estar entre 08:00 e 18:00"
+            )
+
         # 🔎 Verificar conflito antes de criar
         query_conflito = """
             SELECT 1
