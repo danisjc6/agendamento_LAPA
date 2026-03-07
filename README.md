@@ -250,7 +250,7 @@ VALUES (1001, '2020-01-01', '08:00:00', '09:00:00', 'Teste trigger', 'ativo');
 
 No `docker-compose.yml`, a pasta `./sql` e montada em `/docker-entrypoint-initdb.d`, entao a inicializacao do MySQL executa os scripts automaticamente no primeiro start do volume.
 
-## Correcoes realizadas nesta versao (vs. versao passada)
+## Correções realizadas nesta versão (vs. versão passada)
 
 - corrigido erro no frontend ao criar agendamento (`a is not defined`)
 - removida duplicidade de criacao de reserva no frontend (backend ja cria reserva junto com agendamento)
@@ -259,3 +259,6 @@ No `docker-compose.yml`, a pasta `./sql` e montada em `/docker-entrypoint-initdb
 - adicionado refresh automatico de agendamentos na tela principal
 - relatorio ordenado por data mais recente para mais antiga
 - frontend de relatorios atualizado para consumir as views SQL dinamicamente
+- destacar a sala selecionada durante o preenchimento do formulário
+- limitar horários de agendamento para o intervalo entre 8:00 e 18:00.
+
